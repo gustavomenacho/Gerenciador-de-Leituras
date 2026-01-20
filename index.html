@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Minha Biblioteca</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <img src="assets/icon-open-book.svg" class="logo" alt="Logo Minha Biblioteca" />
+    <h1>Minha Biblioteca</h1>
+  </div>
+
+  <button id="openModalBtn" class="primary-btn">
+    + Adicionar livro
+  </button>
+</header>
+
+<main class="container">
+
+  <section id="stats" class="stats"></section>
+
+  <section class="filters">
+    <div class="search">
+      <img src="assets/icons/search.png" alt="Buscar" />
+      <input id="searchInput" placeholder="Buscar por título ou autor..." />
+    </div>
+
+    <select id="statusFilter">
+      <option value="all">Todos os status</option>
+      <option value="Quero ler">Quero ler</option>
+      <option value="Lendo">Lendo</option>
+      <option value="Lido">Lido</option>
+    </select>
+  </section>
+
+  <p id="emptyMessage" class="empty-message">
+    Nenhum livro adicionado ainda. Comece adicionando seu primeiro livro!
+  </p>
+
+  <section id="booksGrid" class="books-grid"></section>
+
+</main>
+
+<div id="modal" class="modal hidden">
+  <div class="modal-box">
+
+    <header>
+      <h2>Adicionar Livro</h2>
+      <button id="closeModal" aria-label="Fechar">&times;</button>
+    </header>
+
+    <form id="bookForm">
+
+      <div class="form-group">
+        <label for="titleInput">Título *</label>
+        <input id="titleInput" placeholder="Digite o título do livro" required />
+      </div>
+
+      <div class="form-group">
+        <label for="authorInput">Autor *</label>
+        <input id="authorInput" placeholder="Digite o nome do autor" required />
+      </div>
+
+      <div class="form-group">
+        <label for="imageInput">URL da imagem</label>
+        <input id="imageInput" placeholder="URL da capa do livro (opcional)" />
+      </div>
+
+      <div class="form-group">
+        <label for="statusInput">Status</label>
+        <select id="statusInput">
+          <option>Quero ler</option>
+          <option>Lendo</option>
+          <option>Lido</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Avaliação</label>
+        <div class="rating-row">
+          <div id="ratingStars" class="stars"></div>
+          <button type="button" id="clearRating" class="clear-rating">
+            Limpar
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="commentInput">Comentário</label>
+        <textarea
+          id="commentInput"
+          maxlength="48"
+          placeholder="Suas anotações sobre o livro (opcional)">
+        </textarea> 
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" id="cancelBtn">Cancelar</button>
+        <button type="submit" class="primary-btn">Salvar</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
