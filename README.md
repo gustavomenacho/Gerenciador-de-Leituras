@@ -1,3 +1,5 @@
+<img width="1196" height="1567" alt="image" src="https://github.com/user-attachments/assets/90bcd565-7bc0-4ff8-9a11-28685a35c355" />
+
 📖 Gerenciador de Leituras
 O Gerenciador de Leituras é uma aplicação web interativa projetada para entusiastas da literatura que desejam organizar sua biblioteca pessoal de forma digital. O sistema permite catalogar livros em diferentes estágios (quero ler, lendo ou lido), avaliar obras e manter um registro detalhado de cada jornada literária.
 
