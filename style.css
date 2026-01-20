@@ -3,11 +3,16 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
 }
 
 body {
-  background: #FFFFFF;
+  background: #ffffff;
   color: #111827;
   font-size: 16px;
   line-height: 1.5;
@@ -51,7 +56,7 @@ body {
   background: #030213;
   border-radius: 8px;
   border: none;
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -59,7 +64,7 @@ body {
 }
 
 .primary-btn:hover {
-  background-color: #211F42;
+  background-color: #211f42;
   transform: translateY(-1px);
 }
 
@@ -79,13 +84,13 @@ body {
 }
 
 .stat-card {
-  border: 1px solid #E5E7EB;
+  border: 1px solid #e5e7eb;
   border-radius: 12px;
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  background: #F9FAFB;
+  background: #f9fafb;
 }
 
 .stat-card strong {
@@ -96,7 +101,7 @@ body {
 
 .stat-card span {
   font-size: 14px;
-  color: #6B7280;
+  color: #6b7280;
 }
 
 /* FILTROS E BUSCA */
@@ -111,7 +116,7 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: #F3F4F6;
+  background: #f3f4f6;
   padding: 0 16px;
   height: 48px;
   border-radius: 10px;
@@ -139,8 +144,8 @@ body {
 }
 
 #statusFilter {
-  border: 1px solid #E5E7EB;
-  background: #F3F4F6;
+  border: 1px solid #e5e7eb;
+  background: #f3f4f6;
   padding: 0 16px;
   border-radius: 10px;
   font-size: 14px;
@@ -157,12 +162,12 @@ body {
 
 /* CARD DO LIVRO */
 .book-card {
-  border: 1px solid #E5E7EB;
+  border: 1px solid #e5e7eb;
   border-radius: 12px;
   padding: 16px;
   display: flex;
   flex-direction: column;
-  background: #FFFFFF;
+  background: #ffffff;
   transition: box-shadow 0.2s ease;
 }
 
@@ -175,7 +180,7 @@ body {
   aspect-ratio: 3 / 4;
   object-fit: cover;
   border-radius: 8px;
-  background: #F3F4F6;
+  background: #f3f4f6;
   margin-bottom: 16px;
 }
 
@@ -199,15 +204,15 @@ body {
 
 .book-card .author {
   font-size: 14px;
-  color: #6B7280;
+  color: #6b7280;
   margin-bottom: 8px;
 }
 
 .comment {
   font-size: 13px;
   line-height: 1.4;
-  color: #4B5563;
-  background: #F9FAFB;
+  color: #4b5563;
+  background: #f9fafb;
   padding: 8px;
   border-radius: 6px;
   margin-top: 8px;
@@ -228,11 +233,20 @@ body {
   margin-bottom: 8px;
 }
 
-.badge.Quero-ler { background: #DBEAFE; color: #1E40AF; }
-.badge.Lendo { background: #FEF3C7; color: #92400E; }
-.badge.Lido { background: #D1FAE5; color: #065F46; }
+.badge.Quero-ler {
+  background: #dbeafe;
+  color: #1e40af;
+}
+.badge.Lendo {
+  background: #fef3c7;
+  color: #92400e;
+}
+.badge.Lido {
+  background: #d1fae5;
+  color: #065f46;
+}
 
-/* ESTRELAS NO CARD */
+/* ESTRELAS NO CARD (Listagem) */
 .book-card .stars {
   display: flex;
   gap: 2px;
@@ -261,8 +275,8 @@ body {
   justify-content: center;
   gap: 6px;
   border-radius: 8px;
-  background: #FFFFFF;
-  border: 1px solid #E5E7EB;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -276,9 +290,16 @@ body {
   aspect-ratio: auto;
 }
 
-.card-actions .edit:hover { background: #F3F4F6; }
-.card-actions .delete { color: #DC2626; border-color: #FCA5A5; }
-.card-actions .delete:hover { background: #FEF2F2; }
+.card-actions .edit:hover {
+  background: #f3f4f6;
+}
+.card-actions .delete {
+  color: #dc2626;
+  border-color: #fca5a5;
+}
+.card-actions .delete:hover {
+  background: #fef2f2;
+}
 
 /* MODAL */
 .modal {
@@ -292,12 +313,14 @@ body {
   backdrop-filter: blur(2px);
 }
 
-.modal.hidden { display: none; }
+.modal.hidden {
+  display: none;
+}
 
 .modal-box {
   width: 100%;
   max-width: 440px;
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
@@ -310,36 +333,72 @@ body {
   margin-bottom: 20px;
 }
 
-.modal-box header h2 { font-size: 20px; font-weight: 600; }
-.modal-box header button { 
-  background: none; border: none; font-size: 24px; cursor: pointer; color: #9CA3AF; 
+.modal-box header h2 {
+  font-size: 20px;
+  font-weight: 600;
+}
+.modal-box header button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #9ca3af;
 }
 
-.form-group { margin-bottom: 16px; }
-.form-group label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+.form-group {
+  margin-bottom: 16px;
+}
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
 
 .modal-box input,
 .modal-box select,
 .modal-box textarea {
   width: 100%;
   padding: 10px 12px;
-  background: #F9FAFB;
-  border: 1px solid #E5E7EB;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
   border-radius: 8px;
   font-size: 14px;
   outline: none;
 }
 
-.modal-box input:focus, .modal-box textarea:focus { border-color: #030213; }
+.modal-box input:focus,
+.modal-box textarea:focus {
+  border-color: #030213;
+}
 
-.modal-box textarea { height: 80px; resize: none; }
+.modal-box textarea {
+  height: 80px;
+  resize: none;
+}
 
-.rating-row { display: flex; align-items: center; gap: 12px; }
-.stars-input img { width: 24px; height: 24px; cursor: pointer; }
+/* AVALIAÇÃO NO MODAL (Correção do Bug das Estrelas Gigantes) */
+.rating-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#ratingStars {
+  display: flex;
+  gap: 4px;
+}
+
+#ratingStars img {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  object-fit: contain;
+}
 
 .clear-rating {
   font-size: 12px;
-  color: #6B7280;
+  color: #6b7280;
   background: none;
   border: none;
   cursor: pointer;
@@ -357,21 +416,29 @@ body {
   padding: 0 16px;
   height: 40px;
   border-radius: 8px;
-  border: 1px solid #E5E7EB;
-  background: #FFF;
+  border: 1px solid #e5e7eb;
+  background: #fff;
   cursor: pointer;
 }
 
 /* RESPONSIVIDADE */
 @media (max-width: 768px) {
-  .stats { grid-template-columns: repeat(2, 1fr); }
-  .filters { grid-template-columns: 1fr; }
-  .modal-box { margin: 16px; max-height: 90vh; overflow-y: auto; }
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .filters {
+    grid-template-columns: 1fr;
+  }
+  .modal-box {
+    margin: 16px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
 }
 
 .empty-message {
   text-align: center;
-  color: #6B7280;
+  color: #6b7280;
   margin-top: 80px;
   font-size: 16px;
 }
