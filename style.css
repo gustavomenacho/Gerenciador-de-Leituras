@@ -1,32 +1,67 @@
-/* =========================================================
-   PAGELOG — identidade visual
-   Papel de sebo, tinta marrom, verde-garrafa e carimbo de biblioteca.
-   Todas as cores ficam em variáveis (tokens) para facilitar ajustes.
-========================================================= */
+/* PageLog - estilos */
+
+/* cores do tema claro (papel, tinta marrom e verde) */
 :root {
-  --paper: #f5efe3;        /* fundo: papel envelhecido */
-  --paper-deep: #ebe2d0;   /* campos e áreas rebaixadas */
-  --card: #fbf8f1;         /* ficha de catálogo */
-  --ink: #3b2a1e;          /* texto principal: tinta marrom */
-  --ink-soft: #6b5847;     /* texto secundário (contraste 6:1 no papel) */
-  --line: #d9cdb6;         /* bordas e pautas */
-  --green: #2f4a3a;        /* verde-garrafa: ações principais */
+  color-scheme: light;
+  --paper: #f5efe3;
+  --paper-deep: #ebe2d0;
+  --card: #fbf8f1;
+  --ink: #3b2a1e;
+  --ink-soft: #6b5847;
+  --line: #d9cdb6;
+  --green: #2f4a3a;
   --green-hover: #243a2d;
-  --gold: #a7814a;         /* detalhes decorativos */
-  --stamp-red: #9b3324;    /* carimbo "Lido" e exclusão */
-  --stamp-green: #2f6b4a;  /* carimbo "Lendo" */
-  --stamp-ink: #4f4a6b;    /* carimbo "Quero ler" */
+  --gold: #a7814a;
+  --stamp-red: #9b3324;
+  --stamp-green: #2f6b4a;
+  --stamp-ink: #4f4a6b;
   --star: #b8862f;
   --focus: #b8862f;
+  --on-primary: #fbf8f1;
+  --field: #ffffff;
+  --stamp-bg: rgba(251, 248, 241, 0.92);
+  --danger-tint: rgba(155, 51, 36, 0.06);
+  --glow-1: rgba(167, 129, 74, 0.07);
+  --glow-2: rgba(47, 74, 58, 0.05);
+  --backdrop: rgba(40, 28, 20, 0.55);
+  --shadow: 0 1px 0 rgba(59, 42, 30, 0.06), 0 8px 24px -12px rgba(59, 42, 30, 0.35);
+  --dialog-shadow: 0 24px 60px -20px rgba(59, 42, 30, 0.6);
 
   --font-display: "Fraunces", Georgia, "Times New Roman", serif;
   --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
 
   --radius: 10px;
-  --shadow: 0 1px 0 rgba(59, 42, 30, 0.06), 0 8px 24px -12px rgba(59, 42, 30, 0.35);
 }
 
-/* ---------- Reset leve ---------- */
+/* tema escuro: so troca as cores, o resto do css e o mesmo */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #181a1b;
+  --paper-deep: #26292b;
+  --card: #202324;
+  --ink: #efe5d3;
+  --ink-soft: #b5aa98;
+  --line: #383d3f;
+  --green: #356b4e;
+  --green-hover: #2d5c43;
+  --gold: #c9a46a;
+  --stamp-red: #e8806a;
+  --stamp-green: #7cc49b;
+  --stamp-ink: #aea8e0;
+  --star: #e0ab4f;
+  --focus: #e0ab4f;
+  --on-primary: #f6efe2;
+  --field: #141617;
+  --stamp-bg: rgba(24, 26, 27, 0.9);
+  --danger-tint: rgba(232, 128, 106, 0.1);
+  --glow-1: rgba(224, 171, 79, 0.04);
+  --glow-2: rgba(79, 138, 105, 0.04);
+  --backdrop: rgba(0, 0, 0, 0.65);
+  --shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 10px 28px -12px rgba(0, 0, 0, 0.7);
+  --dialog-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.85);
+}
+
+/* reset */
 *,
 *::before,
 *::after {
@@ -61,10 +96,10 @@ body {
   display: flex;
   flex-direction: column;
   background-color: var(--paper);
-  /* textura sutil de papel feita só com gradientes, sem imagem extra */
+  /* efeito leve de papel com gradiente */
   background-image:
-    radial-gradient(circle at 20% 10%, rgba(167, 129, 74, 0.07), transparent 40%),
-    radial-gradient(circle at 85% 70%, rgba(47, 74, 58, 0.05), transparent 45%);
+    radial-gradient(circle at 20% 10%, var(--glow-1), transparent 40%),
+    radial-gradient(circle at 85% 70%, var(--glow-2), transparent 45%);
   background-attachment: fixed;
   color: var(--ink);
   font-family: var(--font-body);
@@ -73,7 +108,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Foco visível em tudo que é interativo (navegação por teclado) */
+/* contorno de foco pra quem navega pelo teclado */
 :focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 2px;
@@ -119,7 +154,7 @@ body {
   top: 12px;
 }
 
-/* ---------- Botões ---------- */
+/* botoes */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -137,7 +172,7 @@ body {
 
 .btn-primary {
   background: var(--green);
-  color: #fbf8f1;
+  color: var(--on-primary);
 }
 
 .btn-primary:hover {
@@ -153,6 +188,25 @@ body {
 
 .btn-ghost:hover {
   background: var(--paper-deep);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* botao de tema */
+.icon-btn.theme-toggle {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  color: var(--ink);
+}
+
+.theme-toggle .icon {
+  width: 20px;
+  height: 20px;
 }
 
 .icon-btn {
@@ -172,7 +226,7 @@ body {
   color: var(--ink);
 }
 
-/* ---------- Cabeçalho ---------- */
+/* cabecalho */
 .site-header {
   width: 100%;
   max-width: 1200px;
@@ -211,7 +265,7 @@ body {
   color: var(--ink-soft);
 }
 
-/* ---------- Layout principal ---------- */
+/* conteudo */
 .container {
   width: 100%;
   max-width: 1200px;
@@ -220,7 +274,7 @@ body {
   flex: 1;
 }
 
-/* ---------- Fichas de resumo (também filtram) ---------- */
+/* fichas com os totais */
 .stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -243,7 +297,7 @@ body {
   transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
 }
 
-/* "furo" de ficha de biblioteca */
+/* bolinha imitando o furo da ficha */
 .stat::before {
   content: "";
   position: absolute;
@@ -278,7 +332,7 @@ body {
   color: var(--ink-soft);
 }
 
-/* ---------- Busca e filtros ---------- */
+/* busca e filtros */
 .filters {
   display: grid;
   grid-template-columns: 1fr 200px 200px;
@@ -335,7 +389,7 @@ body {
   border-color: var(--focus);
 }
 
-/* ---------- Título da estante ---------- */
+/* titulo da estante */
 .section-title {
   display: flex;
   align-items: baseline;
@@ -354,7 +408,7 @@ body {
   color: var(--ink-soft);
 }
 
-/* ---------- Estados vazios ---------- */
+/* estante vazia / sem resultado */
 .empty {
   display: flex;
   flex-direction: column;
@@ -392,7 +446,7 @@ body {
   margin-top: 8px;
 }
 
-/* ---------- Estante (grade de livros) ---------- */
+/* grade de livros */
 .books-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -427,7 +481,7 @@ body {
   object-fit: cover;
 }
 
-/* Capa gerada quando o livro não tem imagem (ou a imagem falha) */
+/* capa gerada quando nao tem imagem */
 .cover-generated {
   position: absolute;
   inset: 0;
@@ -440,13 +494,13 @@ body {
   text-align: center;
   color: #f3e6c8;
   background-color: var(--cover, var(--green));
-  /* trama de tecido de encadernação */
+  /* listrinhas imitando tecido */
   background-image:
     repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.035) 0 2px, transparent 2px 5px),
     linear-gradient(90deg, rgba(0, 0, 0, 0.25), transparent 14%);
 }
 
-/* moldura dourada da capa */
+/* moldura da capa */
 .cover-generated::before {
   content: "";
   position: absolute;
@@ -482,7 +536,7 @@ body {
   opacity: 0.85;
 }
 
-/* Carimbo de status, como os de biblioteca */
+/* carimbo do status */
 .stamp {
   position: absolute;
   top: 14px;
@@ -490,7 +544,7 @@ body {
   padding: 3px 10px;
   border: 2px solid currentColor;
   border-radius: 4px;
-  background: rgba(251, 248, 241, 0.92);
+  background: var(--stamp-bg);
   font-family: var(--font-display);
   font-size: 13px;
   font-weight: 700;
@@ -584,10 +638,10 @@ body {
 
 .book-actions [data-action="delete"]:hover {
   border-color: var(--stamp-red);
-  background: rgba(155, 51, 36, 0.06);
+  background: var(--danger-tint);
 }
 
-/* ---------- Rodapé ---------- */
+/* rodape */
 .site-footer {
   padding: 24px 16px 32px;
   text-align: center;
@@ -600,7 +654,7 @@ body {
   text-underline-offset: 3px;
 }
 
-/* ---------- Diálogo (modal) ---------- */
+/* janelas (dialog) */
 .dialog {
   width: min(480px, calc(100% - 32px));
   max-height: calc(100vh - 32px);
@@ -609,11 +663,11 @@ body {
   border-radius: 14px;
   background: var(--card);
   color: var(--ink);
-  box-shadow: 0 24px 60px -20px rgba(59, 42, 30, 0.6);
+  box-shadow: var(--dialog-shadow);
 }
 
 .dialog::backdrop {
-  background: rgba(40, 28, 20, 0.55);
+  background: var(--backdrop);
   backdrop-filter: blur(2px);
 }
 
@@ -670,7 +724,7 @@ body {
 .dialog textarea {
   width: 100%;
   padding: 10px 12px;
-  background: #fff;
+  background: var(--field);
   border: 1px solid var(--line);
   border-radius: 8px;
   font-size: 15px;
@@ -708,7 +762,7 @@ body {
   text-align: right;
 }
 
-/* Estrelas: os radios ficam invisíveis, os rótulos viram as estrelas */
+/* estrelas: escondo o radio e uso o label como estrela */
 .rating-stars {
   display: flex;
   align-items: center;
@@ -754,7 +808,7 @@ body {
   color: var(--ink);
 }
 
-/* o foco do teclado aparece no rótulo do radio focado */
+/* foco do teclado na estrela */
 .rating-stars input:focus-visible + label {
   outline: 3px solid var(--focus);
   outline-offset: 1px;
@@ -763,12 +817,96 @@ body {
 
 .dialog-actions {
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
   gap: 10px;
   margin-top: 8px;
 }
 
-/* ---------- Aviso flutuante ---------- */
+.btn-danger {
+  color: var(--stamp-red);
+}
+
+.btn-danger:hover {
+  border-color: var(--stamp-red);
+  background: var(--danger-tint);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* botao com cara de link */
+.link-btn {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.empty-note {
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+/* janela levar estante */
+.dialog-intro {
+  margin-bottom: 18px;
+  color: var(--ink-soft);
+}
+
+.transfer-option {
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+}
+
+.transfer-option h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  font-family: var(--font-display);
+  font-size: 19px;
+}
+
+.transfer-option h3 .icon {
+  color: var(--gold);
+}
+
+.transfer-option p {
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.transfer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.transfer-link {
+  width: 100%;
+  margin-top: 12px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--field);
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.transfer-link[hidden] {
+  display: none;
+}
+
+/* aviso (toast) */
 .toast {
   position: fixed;
   left: 50%;
@@ -793,7 +931,7 @@ body {
 
 .toast-undo {
   padding: 6px 12px;
-  border: 1px solid rgba(251, 248, 241, 0.4);
+  border: 1px solid color-mix(in srgb, currentColor 40%, transparent);
   border-radius: 999px;
   background: transparent;
   color: inherit;
@@ -802,10 +940,10 @@ body {
 }
 
 .toast-undo:hover {
-  background: rgba(251, 248, 241, 0.12);
+  background: color-mix(in srgb, currentColor 12%, transparent);
 }
 
-/* ---------- Responsividade ---------- */
+/* responsivo */
 @media (max-width: 860px) {
   .filters {
     grid-template-columns: 1fr 1fr;
@@ -848,7 +986,24 @@ body {
   }
 }
 
-/* Respeita quem prefere menos animação */
+/* celular: botao levar estante so com icone */
+@media (max-width: 480px) {
+  .btn-transfer {
+    width: 44px;
+    padding: 0;
+  }
+
+  .btn-transfer .btn-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+
+/* tira animacao pra quem prefere menos movimento */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

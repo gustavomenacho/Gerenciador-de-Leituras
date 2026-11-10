@@ -1,20 +1,19 @@
 <div align="center">
 
-<img src="assets/pagelog.svg" alt="Selo do PageLog: livro aberto em um círculo verde-garrafa" width="120">
+<img src="assets/pagelog.svg" alt="Logo do PageLog" width="120">
 
 # PageLog
 
 **Sua estante pessoal de leituras.**
 
-Um gerenciador de leituras para catalogar livros, acompanhar o que você está lendo e guardar suas notas e impressões.<br>
-Feito com **HTML, CSS e JavaScript puro**, sem frameworks, sem bibliotecas e sem etapa de build.
+Gerenciador de leituras para cadastrar livros, acompanhar o que estou lendo e guardar minhas notas.<br>
+Feito com **HTML, CSS e JavaScript puro**, sem frameworks e sem bibliotecas.
 
-[**🌐 Ver o site no ar**](https://pagelog-leituras.netlify.app) · [Recursos](#-recursos) · [Como rodar](#-como-rodar) · [Decisões técnicas](#-decisões-técnicas) · [Uso de IA](#-uso-de-ia) · [Autor](#-autor)
+[**🌐 Ver o site no ar**](https://pagelog-leituras.netlify.app) · [Funcionalidades](#-funcionalidades) · [Como rodar](#-como-rodar) · [O que aprendi](#-o-que-aprendi) · [Autor](#-autor)
 
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript_ES6+-F7DF1E?style=flat&logo=javascript&logoColor=black)
-![Sem frameworks](https://img.shields.io/badge/frameworks-0-success?style=flat)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)
 ![localStorage](https://img.shields.io/badge/dados-localStorage-2f4a3a?style=flat)
 ![Netlify](https://img.shields.io/badge/deploy-Netlify-00C7B7?style=flat&logo=netlify&logoColor=white)
 
@@ -22,121 +21,112 @@ Feito com **HTML, CSS e JavaScript puro**, sem frameworks, sem bibliotecas e sem
 
 ---
 
-## 📸 Capturas de tela
+## 📸 Telas
 
 <p align="center">
-  <img src="docs/capturas/estante.webp" alt="Estante do PageLog com fichas de resumo, busca, filtros e cinco livros com capas geradas e carimbos de status" width="100%">
-  <br><em>A estante: fichas de resumo que também filtram, busca, ordenação e capas com carimbo de status</em>
+  <img src="docs/capturas/estante.webp" alt="Estante do PageLog com os totais, busca, filtros e cinco livros" width="100%">
 </p>
 
 <p align="center">
-  <img src="docs/capturas/formulario.webp" alt="Formulário de edição do livro Dom Casmurro, com campos de título, autor, capa, status, nota em estrelas e anotação" width="100%">
-  <br><em>Formulário de cadastro e edição, com validação e nota em estrelas acessível pelo teclado</em>
+  <img src="docs/capturas/estante-escuro.webp" alt="Estante no tema escuro" width="100%">
+  <br><em>Tema escuro</em>
 </p>
 
 <p align="center">
-  <img src="docs/capturas/celular.webp" alt="PageLog aberto em uma tela de celular, com as fichas em duas colunas" width="360">
-  <br><em>Versão para celular</em>
+  <img src="docs/capturas/formulario.webp" alt="Formulário de edição de um livro" width="49%">
+  <img src="docs/capturas/formulario-escuro.webp" alt="Formulário de edição no tema escuro" width="49%">
+  <br><em>Cadastro e edição</em>
+</p>
+
+<p align="center">
+  <img src="docs/capturas/transferir.webp" alt="Janela para levar a estante por link ou por arquivo" width="100%">
+  <br><em>Levar a estante para outro aparelho</em>
+</p>
+
+<p align="center">
+  <img src="docs/capturas/celular.webp" alt="PageLog no celular" width="300">
+  <img src="docs/capturas/celular-escuro.webp" alt="PageLog no celular, tema escuro" width="300">
+  <br><em>No celular</em>
 </p>
 
 ---
 
-## 📖 Sobre o projeto
+## 📖 Sobre
 
-O PageLog começou como o **Desafio Fase 2 da Pós-graduação Dev Start** (com apoio educacional da Rocketseat), o projeto de conclusão daquela etapa do curso: um CRUD de livros com `localStorage`.
+Esse projeto começou como o **Desafio Fase 2 da Pós-graduação Dev Start** (com apoio da Rocketseat): um CRUD de livros salvando no `localStorage`.
 
-Depois de entregue, voltei a ele com outro olhar. Corrigi falhas que eu não tinha percebido (entre elas uma brecha de segurança), refiz a acessibilidade e dei ao projeto uma identidade própria: a de um **sebo**, com papel envelhecido, tinta marrom, capas de encadernação em tecido e o carimbo de biblioteca que marca cada livro como *Lido*, *Lendo* ou *Quero ler*.
-
-A ideia é que ele seja ao mesmo tempo útil e uma vitrine de fundamentos: DOM, eventos, estado, acessibilidade e CSS bem organizado, sem esconder nada atrás de um framework.
+Depois de entregar, voltei nele para melhorar. Corrigi bugs que tinham passado (inclusive uma falha de segurança), melhorei a acessibilidade e dei uma cara própria para ele: a de um **sebo**, com papel envelhecido, capas de tecido e carimbos de biblioteca marcando cada livro como *Lido*, *Lendo* ou *Quero ler*.
 
 ---
 
-## ✨ Recursos
+## ✨ Funcionalidades
 
-| Recurso | O que faz |
-|---|---|
-| **Cadastro completo** | Adicionar, editar e excluir livros com título, autor, capa, status, nota e anotação |
-| **Capa automática** | Sem imagem, ou se o link da capa quebrar, o PageLog gera uma capa com título, autor e uma cor própria para cada livro |
-| **Carimbos de status** | *Quero ler*, *Lendo* e *Lido*, no estilo dos carimbos de biblioteca |
-| **Fichas de resumo** | Contam os livros por status e, ao clicar, filtram a estante |
-| **Busca sem acento** | Encontra por título ou autor ignorando acentos e maiúsculas ("codigo" acha "Código Limpo") |
-| **Ordenação** | Mais recentes, título, autor ou maior nota |
-| **Nota em estrelas** | De 1 a 5 ou "sem nota", com prévia ao passar o mouse e uso pelo teclado |
-| **Excluir com "Desfazer"** | O livro removido pode voltar por alguns segundos, sem precisar de uma janela de confirmação |
-| **Exemplos com um clique** | Na estante vazia, "Ver exemplos" preenche o app para quem quer só conhecer |
-| **Dados no navegador** | Tudo fica salvo no `localStorage`: nada é enviado para servidor nenhum |
+- Cadastrar, editar e excluir livros (título, autor, capa, status, nota e anotação)
+- Capa gerada automaticamente quando o livro não tem imagem ou o link da capa quebra
+- Totais por status no topo, que também funcionam como filtro
+- Busca por título ou autor ignorando acentos ("codigo" encontra "Código Limpo")
+- Ordenar por mais recentes, título, autor ou nota
+- Nota de 1 a 5 estrelas, funcionando também pelo teclado
+- Excluir com opção de **desfazer**
+- **Levar a estante para outro aparelho** (começar no celular e continuar no PC) por link ou por arquivo de backup
+- Tema claro e escuro (segue o sistema, mas dá para trocar no botão)
+- Botão "Ver exemplos" para quem quer só conhecer o app
+- Tudo salvo no navegador, sem servidor
 
 ---
 
 ## 🚀 Como rodar
 
-Para só usar, abra **[pagelog-leituras.netlify.app](https://pagelog-leituras.netlify.app)**. O site é publicado pelo Netlify e se atualiza sozinho a cada `git push` na branch `main`.
+O site está no ar em **[pagelog-leituras.netlify.app](https://pagelog-leituras.netlify.app)** (o Netlify publica de novo a cada push na `main`).
 
-Para rodar na sua máquina, não há dependências nem etapa de build: o código do repositório é o código que roda no navegador.
+Para rodar localmente não precisa instalar nada:
 
 ```bash
 git clone https://github.com/gustavomenacho/Gerenciador-de-Leituras.git
 cd Gerenciador-de-Leituras
 ```
 
-Depois, abra o `index.html` no navegador (duplo clique funciona). Se preferir um servidor local, use a extensão **Live Server** do VS Code ou:
+Depois é só abrir o `index.html` no navegador ou usar a extensão **Live Server** do VS Code.
 
-```bash
-npx serve .
+---
+
+## 🗂️ Arquivos
+
+```
+index.html        estrutura da página e janelas (dialog)
+style.css         estilos, cores do tema claro e escuro, responsivo
+script.js         lógica: salvar, mostrar, filtrar, importar/exportar
+assets/           logo e favicon
+docs/capturas/    imagens do README
 ```
 
 ---
 
-## 🗂️ Estrutura
+## 🧠 O que aprendi
 
-```
-index.html           estrutura da página, ícones SVG e o formulário (<dialog>)
-style.css            identidade visual (tokens de cor no :root), layout e responsividade
-script.js            estado, armazenamento, renderização e eventos
-assets/
-  pagelog.svg        selo/logo
-  favicon.svg        ícone da aba
-docs/capturas/       imagens deste README
-```
+**XSS e por que não usar `innerHTML` com dado do usuário.** Na primeira versão eu montava os cards com `innerHTML`. Descobri que se alguém cadastrasse um livro com o título `<img src=x onerror=...>`, aquilo virava código rodando na página. Troquei para `createElement` + `textContent`, que trata tudo como texto. Também passei a aceitar só links de capa com `http://` ou `https://`.
 
----
+**Uma função para desenhar a tela.** Os livros ficam num array e a função `render()` redesenha tudo a partir dele (cards, totais e mensagens de lista vazia). Antes os totais paravam de atualizar quando a busca não achava nada, porque a função saía antes de chegar nessa parte.
 
-## 🧠 Decisões técnicas
+**Usar id em vez da posição no array.** Antes eu identificava o livro pelo índice, o que dava problema com a lista filtrada. Agora cada livro tem um `id` gerado com `crypto.randomUUID()`. Os livros salvos na versão antiga ganham um id quando a página carrega, então ninguém perde nada.
 
-**Segurança: nada de `innerHTML` com dados do usuário.** Na primeira versão, os cards eram montados com `innerHTML`, e um título como `<img src=x onerror=...>` virava código executado na página (XSS). Agora cada parte do card é criada com `createElement` e preenchida com `textContent`, que trata tudo como texto. O link da capa também só é aceito se começar com `http://` ou `https://`.
+**`<dialog>`.** Usando o `<dialog>` com `showModal()` o navegador já cuida de várias coisas: fechar com Esc, prender o foco dentro da janela e devolver o foco para o botão que abriu.
 
-**Uma fonte de verdade.** Os livros vivem num array de objetos, e uma única função, `render()`, desenha a tela inteira a partir dele: grade, contadores e estados vazios. Assim, a interface nunca fica fora de sincronia com os dados (um bug da primeira versão: os contadores paravam de atualizar quando a busca não encontrava nada).
+**Acessibilidade.** As estrelas da nota são `radio` escondidos com o `label` virando a estrela, então dá para escolher com as setas do teclado. Também coloquei `label` em todos os campos, mensagens de erro com `aria-describedby`, foco visível e `prefers-reduced-motion`.
 
-**Identificador único em vez de posição.** Cada livro tem um `id` (`crypto.randomUUID()`). Usar a posição no array como identificador quebra fácil quando a lista está filtrada ou ordenada. Dados salvos pela versão antiga, sem `id`, são convertidos automaticamente ao carregar.
+**Tema escuro com variáveis CSS.** Todas as cores estão em variáveis no `:root`. O tema escuro só troca o valor delas em `:root[data-theme="dark"]`. Um script pequeno no `<head>` aplica o tema antes da página aparecer, para não piscar branco.
 
-**Armazenamento à prova de falhas.** A leitura do `localStorage` fica dentro de um `try/catch`. Se o dado estiver corrompido ou o navegador bloquear o armazenamento, o app começa vazio em vez de quebrar.
+**Levar a estante sem servidor.** Como o `localStorage` é de cada navegador, os livros do celular não aparecem no PC. Para resolver sem precisar de login e banco de dados:
+- **Link:** transformo a estante em JSON, comprimo com `CompressionStream`, converto para base64 e coloco depois do `#` no link. O que vem depois do `#` não vai para o servidor, então os dados passam direto de um navegador para o outro.
+- **Arquivo:** o mesmo JSON, baixado como `.json` e importado com `<input type="file">`.
 
-**`<dialog>` nativo para o formulário.** O elemento `<dialog>` com `showModal()` já entrega, de graça, o que antes exigiria código manual: foco preso dentro do modal, fechamento com Esc, fundo inerte e retorno do foco ao botão que o abriu.
-
-**Delegação de eventos.** Um único ouvinte na grade atende os botões Editar e Excluir de todos os cards, inclusive os criados depois.
-
-**Acessibilidade.**
-- HTML semântico: lista de livros em `<ul>`, títulos hierárquicos, `<fieldset>` e `<legend>` na nota.
-- A nota em estrelas é um grupo de botões de opção (`radio`): funciona com as setas do teclado e o leitor de tela anuncia "3 estrelas".
-- Rótulos em todos os campos, mensagens de erro ligadas ao campo (`aria-describedby`, `aria-invalid`) e avisos anunciados por `role="status"`.
-- Foco visível em todos os elementos interativos e link "Pular para a estante".
-- Respeita `prefers-reduced-motion`.
-
-**CSS com tokens.** Todas as cores e fontes ficam em variáveis no `:root` (`--paper`, `--ink`, `--green`…). A textura de papel e o tecido das capas são feitos só com gradientes, sem nenhuma imagem extra, e os ícones são SVG embutidos no HTML (`<symbol>` + `<use>`), no lugar dos PNGs da primeira versão.
-
-**Responsivo.** Grade com `auto-fill` e `minmax()`, fichas em duas colunas e filtros reorganizados no celular, sem rolagem horizontal.
-
----
-
-## 🤖 Uso de IA
-
-A primeira versão foi feita por mim durante o curso. Nesta revisão, usei o **Claude (Anthropic)** como apoio: para revisar o código, apontar falhas (como o XSS e os problemas de acessibilidade). As escolhas de identidade, nome e escopo foram minhas, e todo o código foi revisado e testado por mim no navegador.
+Na hora de importar dá para **juntar** ou **substituir**. Para juntar sem duplicar, comparo os livros pelo id ou por título + autor, e fica a versão que foi editada por último (cada livro guarda `updatedAt`). Como o arquivo pode vir de qualquer lugar, todo livro importado passa pela mesma função que limpa e valida os dados do formulário.
 
 ---
 
 ## 👤 Autor
 
-**Gustavo Menacho**: advogado em transição para o desenvolvimento front-end.
+**Gustavo Menacho**, advogado em transição para o desenvolvimento front-end.
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/gustavomenacho/)
 [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)](https://github.com/gustavomenacho)
