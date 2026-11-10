@@ -9,13 +9,14 @@
 Um gerenciador de leituras para catalogar livros, acompanhar o que você está lendo e guardar suas notas e impressões.<br>
 Feito com **HTML, CSS e JavaScript puro**, sem frameworks, sem bibliotecas e sem etapa de build.
 
-[Recursos](#-recursos) · [Como rodar](#-como-rodar) · [Decisões técnicas](#-decisões-técnicas) · [Uso de IA](#-uso-de-ia) · [Autor](#-autor)
+[**🌐 Ver o site no ar**](https://pagelog-leituras.netlify.app) · [Recursos](#-recursos) · [Como rodar](#-como-rodar) · [Decisões técnicas](#-decisões-técnicas) · [Uso de IA](#-uso-de-ia) · [Autor](#-autor)
 
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript_ES6+-F7DF1E?style=flat&logo=javascript&logoColor=black)
 ![Sem frameworks](https://img.shields.io/badge/frameworks-0-success?style=flat)
 ![localStorage](https://img.shields.io/badge/dados-localStorage-2f4a3a?style=flat)
+![Netlify](https://img.shields.io/badge/deploy-Netlify-00C7B7?style=flat&logo=netlify&logoColor=white)
 
 </div>
 
@@ -69,7 +70,9 @@ A ideia é que ele seja ao mesmo tempo útil e uma vitrine de fundamentos: DOM, 
 
 ## 🚀 Como rodar
 
-Não há dependências nem etapa de build: o código do repositório é o código que roda no navegador.
+Para só usar, abra **[pagelog-leituras.netlify.app](https://pagelog-leituras.netlify.app)**. O site é publicado pelo Netlify e se atualiza sozinho a cada `git push` na branch `main`.
+
+Para rodar na sua máquina, não há dependências nem etapa de build: o código do repositório é o código que roda no navegador.
 
 ```bash
 git clone https://github.com/gustavomenacho/Gerenciador-de-Leituras.git
