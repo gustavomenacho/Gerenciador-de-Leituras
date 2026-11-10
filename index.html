@@ -3,124 +3,224 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Minha Biblioteca</title>
+    <title>PageLog · Gerenciador de Leituras</title>
+    <meta
+      name="description"
+      content="PageLog: sua estante pessoal. Catalogue livros, acompanhe o que está lendo e registre suas notas."
+    />
+    <meta name="theme-color" content="#f5efe3" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,400&family=Inter:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
 
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <header class="header">
-      <div class="header-left">
-        <img
-          src="assets/icon-open-book.svg"
-          class="logo"
-          alt="Logo Minha Biblioteca"
-        />
-        <h1>Minha Biblioteca</h1>
+    <!-- Ícones SVG reutilizáveis (chamados com <use href="#icon-...">) -->
+    <svg class="sprite" aria-hidden="true" focusable="false">
+      <symbol id="icon-plus" viewBox="0 0 24 24">
+        <path d="M12 5v14M5 12h14" />
+      </symbol>
+      <symbol id="icon-search" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="7" />
+        <path d="m20 20-3.5-3.5" />
+      </symbol>
+      <symbol id="icon-edit" viewBox="0 0 24 24">
+        <path d="M4 20h4L19 9l-4-4L4 16v4Z" />
+        <path d="m13.5 6.5 4 4" />
+      </symbol>
+      <symbol id="icon-trash" viewBox="0 0 24 24">
+        <path d="M4 7h16M10 11v6M14 11v6" />
+        <path d="M6 7l1 13h10l1-13M9 7V4h6v3" />
+      </symbol>
+      <symbol id="icon-close" viewBox="0 0 24 24">
+        <path d="M6 6l12 12M18 6 6 18" />
+      </symbol>
+    </svg>
+
+    <a class="skip-link" href="#estante">Pular para a estante</a>
+
+    <header class="site-header">
+      <div class="brand">
+        <img src="assets/pagelog.svg" class="brand-seal" alt="" width="52" height="52" />
+        <div>
+          <h1 class="brand-name">PageLog</h1>
+          <p class="brand-tagline">Sua estante pessoal de leituras</p>
+        </div>
       </div>
 
-      <button id="openModalBtn" class="primary-btn">+ Adicionar livro</button>
+      <button id="openModalBtn" class="btn btn-primary" type="button">
+        <svg class="icon" aria-hidden="true"><use href="#icon-plus" /></svg>
+        Novo livro
+      </button>
     </header>
 
     <main class="container">
-      <section id="stats" class="stats"></section>
-
-      <section class="filters">
-        <div class="search">
-          <img src="assets/icons/search.png" alt="Buscar" />
-          <input id="searchInput" placeholder="Buscar por título ou autor..." />
-        </div>
-
-        <select id="statusFilter">
-          <option value="all">Todos os status</option>
-          <option value="Quero ler">Quero ler</option>
-          <option value="Lendo">Lendo</option>
-          <option value="Lido">Lido</option>
-        </select>
+      <!-- Cada ficha é um botão: clicar filtra a estante por aquele status -->
+      <section class="stats" aria-label="Resumo da estante">
+        <button class="stat" type="button" data-status="all" aria-pressed="true">
+          <span class="stat-number" data-count="all">0</span>
+          <span class="stat-label">No acervo</span>
+        </button>
+        <button class="stat" type="button" data-status="Quero ler" aria-pressed="false">
+          <span class="stat-number" data-count="Quero ler">0</span>
+          <span class="stat-label">Quero ler</span>
+        </button>
+        <button class="stat" type="button" data-status="Lendo" aria-pressed="false">
+          <span class="stat-number" data-count="Lendo">0</span>
+          <span class="stat-label">Lendo</span>
+        </button>
+        <button class="stat" type="button" data-status="Lido" aria-pressed="false">
+          <span class="stat-number" data-count="Lido">0</span>
+          <span class="stat-label">Lidos</span>
+        </button>
       </section>
 
-      <p id="emptyMessage" class="empty-message">
-        Nenhum livro adicionado ainda. Comece adicionando seu primeiro livro!
-      </p>
+      <section class="filters" aria-label="Busca e filtros">
+        <div class="field search">
+          <label for="searchInput" class="visually-hidden">Buscar por título ou autor</label>
+          <svg class="icon" aria-hidden="true"><use href="#icon-search" /></svg>
+          <input id="searchInput" type="search" placeholder="Buscar por título ou autor…" autocomplete="off" />
+        </div>
 
-      <section id="booksGrid" class="books-grid"></section>
+        <div class="field">
+          <label for="statusFilter" class="field-label">Status</label>
+          <select id="statusFilter">
+            <option value="all">Todos</option>
+            <option value="Quero ler">Quero ler</option>
+            <option value="Lendo">Lendo</option>
+            <option value="Lido">Lido</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="sortSelect" class="field-label">Ordenar</label>
+          <select id="sortSelect">
+            <option value="recent">Mais recentes</option>
+            <option value="title">Título (A–Z)</option>
+            <option value="author">Autor (A–Z)</option>
+            <option value="rating">Maior nota</option>
+          </select>
+        </div>
+      </section>
+
+      <h2 id="estante" class="section-title" tabindex="-1">
+        Estante <span id="resultCount" class="result-count"></span>
+      </h2>
+
+      <!-- Estado vazio: acervo sem livros -->
+      <div id="emptyLibrary" class="empty" hidden>
+        <img src="assets/pagelog.svg" alt="" width="96" height="96" />
+        <h3>Sua estante ainda está vazia</h3>
+        <p>Cadastre o primeiro livro ou veja como fica com alguns exemplos.</p>
+        <div class="empty-actions">
+          <button type="button" class="btn btn-primary" data-action="add">
+            <svg class="icon" aria-hidden="true"><use href="#icon-plus" /></svg>
+            Novo livro
+          </button>
+          <button type="button" class="btn btn-ghost" data-action="examples">Ver exemplos</button>
+        </div>
+      </div>
+
+      <!-- Estado vazio: busca/filtro sem resultado -->
+      <div id="emptySearch" class="empty" hidden>
+        <h3>Nenhum livro encontrado</h3>
+        <p>Nenhum título ou autor corresponde à busca e ao filtro escolhidos.</p>
+        <button type="button" class="btn btn-ghost" data-action="clear-filters">Limpar filtros</button>
+      </div>
+
+      <ul id="booksGrid" class="books-grid" aria-labelledby="estante"></ul>
     </main>
 
-    <div id="modal" class="modal hidden">
-      <div class="modal-box">
-        <header>
-          <h2>Adicionar Livro</h2>
-          <button id="closeModal" aria-label="Fechar">&times;</button>
+    <footer class="site-footer">
+      <p>
+        Feito por <a href="https://github.com/gustavomenacho">Gustavo Menacho</a> ·
+        seus dados ficam salvos só neste navegador.
+      </p>
+    </footer>
+
+    <!-- <dialog> nativo: já traz foco preso, tecla Esc e fundo inerte -->
+    <dialog id="bookDialog" class="dialog" aria-labelledby="dialogTitle">
+      <form id="bookForm" class="dialog-form" novalidate>
+        <header class="dialog-header">
+          <h2 id="dialogTitle">Novo livro</h2>
+          <button type="button" class="icon-btn" data-close aria-label="Fechar">
+            <svg class="icon" aria-hidden="true"><use href="#icon-close" /></svg>
+          </button>
         </header>
 
-        <form id="bookForm">
-          <div class="form-group">
-            <label for="titleInput">Título *</label>
-            <input
-              id="titleInput"
-              placeholder="Digite o título do livro"
-              required
-            />
-          </div>
+        <div class="form-group">
+          <label for="titleInput">Título <span class="req" aria-hidden="true">*</span></label>
+          <input id="titleInput" name="title" required maxlength="120" autocomplete="off"
+            aria-describedby="titleError" placeholder="Ex.: Dom Casmurro" />
+          <p id="titleError" class="error" hidden>Informe o título do livro.</p>
+        </div>
 
-          <div class="form-group">
-            <label for="authorInput">Autor *</label>
-            <input
-              id="authorInput"
-              placeholder="Digite o nome do autor"
-              required
-            />
-          </div>
+        <div class="form-group">
+          <label for="authorInput">Autor <span class="req" aria-hidden="true">*</span></label>
+          <input id="authorInput" name="author" required maxlength="80" autocomplete="off"
+            aria-describedby="authorError" placeholder="Ex.: Machado de Assis" />
+          <p id="authorError" class="error" hidden>Informe o nome do autor.</p>
+        </div>
 
-          <div class="form-group">
-            <label for="imageInput">URL da imagem</label>
-            <input
-              id="imageInput"
-              placeholder="URL da capa do livro (opcional)"
-            />
-          </div>
+        <div class="form-group">
+          <label for="imageInput">URL da capa <span class="optional">(opcional)</span></label>
+          <input id="imageInput" name="image" type="url" inputmode="url" autocomplete="off"
+            aria-describedby="imageHint" placeholder="https://…" />
+          <p id="imageHint" class="hint">Sem capa? O PageLog cria uma para você.</p>
+        </div>
 
-          <div class="form-group">
-            <label for="statusInput">Status</label>
-            <select id="statusInput">
-              <option>Quero ler</option>
-              <option>Lendo</option>
-              <option>Lido</option>
-            </select>
-          </div>
+        <div class="form-group">
+          <label for="statusInput">Status</label>
+          <select id="statusInput" name="status">
+            <option>Quero ler</option>
+            <option>Lendo</option>
+            <option>Lido</option>
+          </select>
+        </div>
 
-          <div class="form-group">
-            <label>Avaliação</label>
-            <div class="rating-row">
-              <div id="ratingStars" class="stars"></div>
-              <button type="button" id="clearRating" class="clear-rating">
-                Limpar
-              </button>
-            </div>
+        <!-- Nota como grupo de opções: funciona com mouse, toque e setas do teclado -->
+        <fieldset class="form-group rating">
+          <legend>Avaliação</legend>
+          <div class="rating-stars">
+            <input type="radio" name="rating" id="r0" value="0" checked />
+            <label for="r0" class="rating-none">Sem nota</label>
+            <input type="radio" name="rating" id="r1" value="1" />
+            <label for="r1" class="star-label"><span aria-hidden="true">★</span><span class="visually-hidden">1 estrela</span></label>
+            <input type="radio" name="rating" id="r2" value="2" />
+            <label for="r2" class="star-label"><span aria-hidden="true">★</span><span class="visually-hidden">2 estrelas</span></label>
+            <input type="radio" name="rating" id="r3" value="3" />
+            <label for="r3" class="star-label"><span aria-hidden="true">★</span><span class="visually-hidden">3 estrelas</span></label>
+            <input type="radio" name="rating" id="r4" value="4" />
+            <label for="r4" class="star-label"><span aria-hidden="true">★</span><span class="visually-hidden">4 estrelas</span></label>
+            <input type="radio" name="rating" id="r5" value="5" />
+            <label for="r5" class="star-label"><span aria-hidden="true">★</span><span class="visually-hidden">5 estrelas</span></label>
           </div>
+        </fieldset>
 
-          <div class="form-group">
-            <label for="commentInput">Comentário</label>
-            <textarea
-              id="commentInput"
-              maxlength="48"
-              placeholder="Suas anotações sobre o livro (opcional)"
-            >
-            </textarea>
-          </div>
+        <div class="form-group">
+          <label for="commentInput">Anotação <span class="optional">(opcional)</span></label>
+          <textarea id="commentInput" name="comment" maxlength="280" rows="3"
+            aria-describedby="commentCount" placeholder="Uma frase, uma impressão, um lembrete…"></textarea>
+          <p id="commentCount" class="hint counter">0/280</p>
+        </div>
 
-          <div class="modal-actions">
-            <button type="button" id="cancelBtn">Cancelar</button>
-            <button type="submit" class="primary-btn">Salvar</button>
-          </div>
-        </form>
-      </div>
+        <div class="dialog-actions">
+          <button type="button" class="btn btn-ghost" data-close>Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="submitBtn">Adicionar</button>
+        </div>
+      </form>
+    </dialog>
+
+    <!-- Aviso flutuante (ex.: "Livro removido · Desfazer"), lido por leitores de tela -->
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden>
+      <span id="toastText"></span>
+      <button type="button" id="toastUndo" class="toast-undo" hidden>Desfazer</button>
     </div>
 
     <script src="script.js"></script>

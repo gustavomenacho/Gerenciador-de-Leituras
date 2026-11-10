@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Selo PageLog">
+  <defs>
+    <path id="arc-top" d="M 22 60 A 38 38 0 0 1 98 60" />
+    <path id="arc-bottom" d="M 26 66 A 34 34 0 0 0 94 66" />
+  </defs>
+  <circle cx="60" cy="60" r="56" fill="#2f4a3a" />
+  <circle cx="60" cy="60" r="50" fill="none" stroke="#e9d9b4" stroke-width="1.5" />
+  <circle cx="60" cy="60" r="28" fill="none" stroke="#e9d9b4" stroke-width="1" opacity="0.6" />
+  <text font-family="Georgia, 'Times New Roman', serif" font-size="11" font-weight="700" letter-spacing="3" fill="#e9d9b4" text-anchor="middle">
+    <textPath href="#arc-top" startOffset="50%">PAGELOG</textPath>
+  </text>
+  <text font-family="Georgia, 'Times New Roman', serif" font-size="8" font-style="italic" letter-spacing="1.5" fill="#e9d9b4" text-anchor="middle" opacity="0.85">
+    <textPath href="#arc-bottom" startOffset="50%">· estante pessoal ·</textPath>
+  </text>
+  <!-- livro aberto -->
+  <g fill="none" stroke="#e9d9b4" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M60 52c-6-4-12-5-19-4v20c7-1 13 0 19 4 6-4 12-5 19-4V48c-7-1-13 0-19 4Z" />
+    <path d="M60 52v20" />
+  </g>
+</svg>
