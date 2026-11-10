@@ -127,7 +127,7 @@ docs/capturas/       imagens deste README
 
 ## 🤖 Uso de IA
 
-A primeira versão foi feita por mim durante o curso. Nesta revisão, usei o **Claude (Anthropic)** como apoio: para revisar o código, apontar falhas (como o XSS e os problemas de acessibilidade), propor a identidade visual, explicar cada mudança e gerar as capturas de tela deste README. As escolhas de identidade, nome e escopo foram minhas, e todo o código foi revisado e testado por mim no navegador.
+A primeira versão foi feita por mim durante o curso. Nesta revisão, usei o **Claude (Anthropic)** como apoio: para revisar o código, apontar falhas (como o XSS e os problemas de acessibilidade). As escolhas de identidade, nome e escopo foram minhas, e todo o código foi revisado e testado por mim no navegador.
 
 ---
 
