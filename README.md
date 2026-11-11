@@ -9,7 +9,7 @@
 Gerenciador de leituras para cadastrar livros, acompanhar o que estou lendo e guardar minhas notas.<br>
 Feito com **HTML, CSS e JavaScript puro**, sem frameworks e sem bibliotecas.
 
-[**🌐 Ver o site no ar**](https://pagelog-leituras.netlify.app) · [Funcionalidades](#-funcionalidades) · [Como rodar](#-como-rodar) · [O que aprendi](#-o-que-aprendi) · [Autor](#-autor)
+[**🌐 Ver o site no ar**](https://pagelog-leituras.netlify.app) · [Funcionalidades](#-funcionalidades) · [Como rodar](#-como-rodar) · [Lighthouse](#-lighthouse) · [O que aprendi](#-o-que-aprendi) · [Autor](#-autor)
 
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white)
@@ -97,6 +97,17 @@ npx serve .
 Ou use a extensão **Live Server** do VS Code. Com Python também funciona: `python -m http.server`.
 
 **Instalar no celular:** abra o site no Chrome (Android) e toque em "Instalar o PageLog" no rodapé ou em "Adicionar à tela inicial" no menu. No iPhone, use Compartilhar → "Adicionar à Tela de Início".
+
+---
+
+## 📊 Lighthouse
+
+Medido no site publicado com o [PageSpeed Insights](https://pagespeed.web.dev/) em novembro de 2026:
+
+| | Desempenho | Acessibilidade | Boas práticas | SEO |
+|---|:---:|:---:|:---:|:---:|
+| **Celular** | 98 | 100 | 100 | 100 |
+| **Computador** | 97 | 100 | 100 | 100 |
 
 ---
 
