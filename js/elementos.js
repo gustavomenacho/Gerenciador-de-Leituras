@@ -60,3 +60,7 @@ export const editGoalBtn = document.getElementById("editGoalBtn");
 export const goalForm = document.getElementById("goalForm");
 export const goalInput = document.getElementById("goalInput");
 export const cancelGoalBtn = document.getElementById("cancelGoalBtn");
+
+// busca de capa
+export const searchCoverBtn = document.getElementById("searchCoverBtn");
+export const coverResults = document.getElementById("coverResults");

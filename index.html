@@ -322,6 +322,10 @@
                   <svg class="icon" aria-hidden="true"><use href="#icon-image" /></svg>
                   Escolher imagem
                 </button>
+                <button type="button" class="btn btn-ghost btn-small" id="searchCoverBtn">
+                  <svg class="icon" aria-hidden="true"><use href="#icon-search" /></svg>
+                  Buscar capa
+                </button>
                 <button type="button" class="btn btn-ghost btn-small btn-danger" id="removeCoverBtn" hidden>Remover</button>
               </div>
               <label for="imageInput" class="cover-or">ou cole o link de uma imagem</label>
@@ -330,6 +334,8 @@
             </div>
           </div>
           <p id="imageHint" class="hint" role="status">Sem capa? O PageLog cria uma para você.</p>
+          <!-- sugestoes de capa da Open Library -->
+          <ul id="coverResults" class="cover-results" aria-label="Capas encontradas" hidden></ul>
           <input id="coverFile" type="file" accept="image/*" hidden />
         </fieldset>
 

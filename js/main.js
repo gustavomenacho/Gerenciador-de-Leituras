@@ -3,12 +3,13 @@
 // arquivo principal: liga os eventos e inicia a pagina
 
 import { state } from "./estado.js";
-import { cancelGoalBtn, chooseCoverBtn, commentInput, copyLinkBtn, coverFile, downloadBtn, editGoalBtn, form, goalForm, grid, imageInput, importDialog, importFile, importMergeBtn, importReplaceBtn, removeCoverBtn, searchInput, shareLinkBtn, sortSelect, starLabels, statButtons, statusFilter, statusInput, themeToggle, toastUndo } from "./elementos.js";
+import { cancelGoalBtn, chooseCoverBtn, commentInput, copyLinkBtn, coverFile, downloadBtn, editGoalBtn, form, goalForm, grid, imageInput, importDialog, importFile, importMergeBtn, importReplaceBtn, removeCoverBtn, searchCoverBtn, searchInput, shareLinkBtn, sortSelect, starLabels, statButtons, statusFilter, statusInput, themeToggle, toastUndo } from "./elementos.js";
 import { loadBooks } from "./dados.js";
 import { loadCovers } from "./capas.js";
 import { render } from "./tela.js";
 import { clearCover, handleCoverFile, handleStatusChange, handleSubmit, openBookDialog, paintStars, updateCommentCount, updateCoverPreview } from "./formulario.js";
 import { closeGoalForm, openGoalForm, submitGoal } from "./meta.js";
+import { searchCover } from "./openlibrary.js";
 import { clearFilters, loadExamples, removeBook, undo } from "./acoes.js";
 import { applyTheme, getSavedTheme, toggleTheme } from "./tema.js";
 import { confirmImport, copyLink, downloadFile, importFromFile, importFromLink, openTransferDialog, shareLink } from "./transferir.js";
@@ -83,6 +84,7 @@ coverFile.addEventListener("change", function () {
   }
 });
 removeCoverBtn.addEventListener("click", clearCover);
+searchCoverBtn.addEventListener("click", searchCover);
 imageInput.addEventListener("input", function () {
   // digitou um link: ele passa a valer no lugar da imagem do aparelho
   // (se apagar o link de novo, a imagem salva volta)

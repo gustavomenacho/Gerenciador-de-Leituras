@@ -1,4 +1,5 @@
 import { DEFAULT_IMAGE_HINT, MAX_COVER_FILE } from "./constantes.js";
+import { clearCoverResults } from "./openlibrary.js";
 import { state } from "./estado.js";
 import { authorInput, bookDialog, chooseCoverBtn, commentCount, commentInput, coverFile, coverPreviewImg, dialogTitle, finishedField, finishedInput, form, imageHint, imageInput, pagesError, pagesReadInput, pagesTotalInput, removeCoverBtn, starLabels, statusInput, submitBtn, titleInput } from "./elementos.js";
 import { createId, isValidImageUrl } from "./utils.js";
@@ -134,6 +135,7 @@ export function openBookDialog(book) {
   imageHint.textContent = DEFAULT_IMAGE_HINT;
   state.newCover = null;
   state.removeCover = false;
+  clearCoverResults();
 
   if (book) {
     state.editingId = book.id;
