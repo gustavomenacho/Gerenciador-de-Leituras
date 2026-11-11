@@ -3,13 +3,14 @@
 // arquivo principal: liga os eventos e inicia a pagina
 
 import { state } from "./estado.js";
-import { cancelGoalBtn, chooseCoverBtn, commentInput, copyLinkBtn, coverFile, downloadBtn, editGoalBtn, form, goalForm, grid, imageInput, importDialog, importFile, importMergeBtn, importReplaceBtn, removeCoverBtn, searchCoverBtn, searchInput, shareLinkBtn, sortSelect, starLabels, statButtons, statusFilter, statusInput, themeToggle, toastUndo } from "./elementos.js";
+import { cancelGoalBtn, chooseCoverBtn, installBtn, commentInput, copyLinkBtn, coverFile, downloadBtn, editGoalBtn, form, goalForm, grid, imageInput, importDialog, importFile, importMergeBtn, importReplaceBtn, removeCoverBtn, searchCoverBtn, searchInput, shareLinkBtn, sortSelect, starLabels, statButtons, statusFilter, statusInput, themeToggle, toastUndo } from "./elementos.js";
 import { loadBooks } from "./dados.js";
 import { loadCovers } from "./capas.js";
 import { render } from "./tela.js";
 import { clearCover, handleCoverFile, handleStatusChange, handleSubmit, openBookDialog, paintStars, updateCommentCount, updateCoverPreview } from "./formulario.js";
 import { closeGoalForm, openGoalForm, submitGoal } from "./meta.js";
 import { searchCover } from "./openlibrary.js";
+import { installApp, startPwa } from "./pwa.js";
 import { clearFilters, loadExamples, removeBook, undo } from "./acoes.js";
 import { applyTheme, getSavedTheme, toggleTheme } from "./tema.js";
 import { confirmImport, copyLink, downloadFile, importFromFile, importFromLink, openTransferDialog, shareLink } from "./transferir.js";
@@ -133,6 +134,9 @@ editGoalBtn.addEventListener("click", openGoalForm);
 cancelGoalBtn.addEventListener("click", closeGoalForm);
 goalForm.addEventListener("submit", submitGoal);
 
+// instalar como app
+installBtn.addEventListener("click", installApp);
+
 // se a pessoa nunca escolheu um tema, acompanha o do sistema
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function (event) {
   if (!getSavedTheme()) {
@@ -176,3 +180,5 @@ loadCovers()
   .catch(function () {
     // sem IndexedDB (ex.: alguns modos anonimos): os livros aparecem com a capa gerada
   });
+
+startPwa();

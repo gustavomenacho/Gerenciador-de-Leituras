@@ -64,3 +64,6 @@ export const cancelGoalBtn = document.getElementById("cancelGoalBtn");
 // busca de capa
 export const searchCoverBtn = document.getElementById("searchCoverBtn");
 export const coverResults = document.getElementById("coverResults");
+
+// app instalavel
+export const installBtn = document.getElementById("installBtn");

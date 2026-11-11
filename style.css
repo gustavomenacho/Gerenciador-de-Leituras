@@ -1256,3 +1256,8 @@ body {
     transition: none !important;
   }
 }
+
+.install-btn {
+  margin-left: 6px;
+  font-weight: 600;
+}
