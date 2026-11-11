@@ -89,8 +89,8 @@ O site está no ar em **[pagelog-leituras.netlify.app](https://pagelog-leituras.
 Para rodar localmente não precisa instalar nenhuma dependência, mas precisa de um servidor local, porque o JavaScript usa módulos (`import`/`export`) e o navegador não carrega módulos abrindo o arquivo direto (`file://`):
 
 ```bash
-git clone https://github.com/gustavomenacho/Gerenciador-de-Leituras.git
-cd Gerenciador-de-Leituras
+git clone https://github.com/gustavomenacho/pagelog.git
+cd pagelog
 npx serve .
 ```
 
