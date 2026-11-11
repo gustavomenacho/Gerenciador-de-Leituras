@@ -13,6 +13,14 @@ const IMPORT_PREFIX = "#importar=";
 const MAX_IMPORT = 2000;
 const LONG_LINK = 30000;
 
+// capas enviadas do aparelho ficam no IndexedDB (cabe muito mais que no localStorage)
+const DB_NAME = "pagelog";
+const COVER_STORE = "capas";
+const COVER_MAX_WIDTH = 400;
+const COVER_MAX_HEIGHT = 600;
+const MAX_COVER_FILE = 15 * 1024 * 1024; // 15 MB (antes de reduzir)
+const DEFAULT_IMAGE_HINT = "Sem capa? O PageLog cria uma para você.";
+
 const EXAMPLE_BOOKS = [
   { title: "Dom Casmurro", author: "Machado de Assis", status: "Lido", rating: 5, comment: "Capitu traiu ou não traiu? Releria só para decidir de novo." },
   { title: "Torto Arado", author: "Itamar Vieira Junior", status: "Lendo", rating: 0, comment: "" },
@@ -28,6 +36,9 @@ let editingId = null; // null quando esta criando um livro novo
 let backup = null; // copia da estante pro botao "Desfazer"
 let toastTimer = null;
 let pendingImport = null; // livros esperando confirmacao de importacao
+let coverUrls = {}; // id do livro -> endereco temporario da capa salva no IndexedDB
+let newCover = null; // capa escolhida no formulario (ainda nao salva)
+let removeCover = false; // true quando clicou em "Remover" no formulario
 
 // ---------- elementos ----------
 
@@ -53,6 +64,10 @@ const statusInput = document.getElementById("statusInput");
 const commentInput = document.getElementById("commentInput");
 const commentCount = document.getElementById("commentCount");
 const starLabels = document.querySelectorAll(".star-label");
+const chooseCoverBtn = document.getElementById("chooseCoverBtn");
+const removeCoverBtn = document.getElementById("removeCoverBtn");
+const coverFile = document.getElementById("coverFile");
+const coverPreviewImg = document.getElementById("coverPreviewImg");
 
 const toast = document.getElementById("toast");
 const toastText = document.getElementById("toastText");
@@ -189,6 +204,7 @@ function normalizeBook(raw, index) {
     status: status,
     rating: rating,
     comment: cleanText(raw.comment, 280),
+    localCover: raw.localCover === true, // true = tem capa salva no IndexedDB
     createdAt: createdAt,
     updatedAt: updatedAt
   };
@@ -216,6 +232,166 @@ function saveBooks() {
   } catch (error) {
     showToast("Não foi possível salvar neste navegador.");
   }
+}
+
+// ---------- capas do aparelho (IndexedDB) ----------
+// o localStorage so guarda texto e tem limite de uns 5 MB,
+// entao as imagens ficam no IndexedDB, com o id do livro como chave
+
+function openDatabase() {
+  return new Promise(function (resolve, reject) {
+    const request = indexedDB.open(DB_NAME, 1);
+    // roda so na primeira vez (ou quando muda a versao): cria a "tabela" das capas
+    request.onupgradeneeded = function () {
+      request.result.createObjectStore(COVER_STORE);
+    };
+    request.onsuccess = function () {
+      resolve(request.result);
+    };
+    request.onerror = function () {
+      reject(request.error);
+    };
+  });
+}
+
+// executa uma acao no IndexedDB e espera terminar
+async function useCoverStore(mode, action) {
+  const db = await openDatabase();
+  return new Promise(function (resolve, reject) {
+    const transaction = db.transaction(COVER_STORE, mode);
+    const store = transaction.objectStore(COVER_STORE);
+    let result;
+    action(store, function (value) {
+      result = value;
+    });
+    transaction.oncomplete = function () {
+      db.close();
+      resolve(result);
+    };
+    transaction.onerror = function () {
+      db.close();
+      reject(transaction.error);
+    };
+  });
+}
+
+// cria um endereco temporario (blob:...) pra usar a imagem no <img>
+function setCoverUrl(id, blob) {
+  if (coverUrls[id]) {
+    URL.revokeObjectURL(coverUrls[id]);
+  }
+  coverUrls[id] = URL.createObjectURL(blob);
+}
+
+async function saveCover(id, blob) {
+  await useCoverStore("readwrite", function (store) {
+    store.put(blob, id);
+  });
+  setCoverUrl(id, blob);
+}
+
+async function deleteCover(id) {
+  await useCoverStore("readwrite", function (store) {
+    store.delete(id);
+  });
+  if (coverUrls[id]) {
+    URL.revokeObjectURL(coverUrls[id]);
+    delete coverUrls[id];
+  }
+}
+
+async function getCover(id) {
+  return useCoverStore("readonly", function (store, done) {
+    const request = store.get(id);
+    request.onsuccess = function () {
+      done(request.result);
+    };
+  });
+}
+
+// carrega todas as capas quando a pagina abre
+// e apaga as que sobraram de livros que nao existem mais
+async function loadCovers() {
+  const ids = books.map(function (book) {
+    return book.id;
+  });
+
+  await useCoverStore("readwrite", function (store) {
+    const request = store.openCursor();
+    request.onsuccess = function () {
+      const cursor = request.result;
+      if (!cursor) {
+        return;
+      }
+      if (ids.includes(cursor.key)) {
+        setCoverUrl(cursor.key, cursor.value);
+      } else {
+        cursor.delete();
+      }
+      cursor.continue();
+    };
+  });
+}
+
+// diminui a foto antes de salvar (foto de celular tem varios MB)
+// desenha a imagem menor num canvas e exporta como JPEG
+function resizeImage(file) {
+  return new Promise(function (resolve, reject) {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+
+    img.onload = function () {
+      URL.revokeObjectURL(url);
+
+      let scale = Math.min(COVER_MAX_WIDTH / img.width, COVER_MAX_HEIGHT / img.height);
+      if (scale > 1) {
+        scale = 1; // nao aumenta imagem pequena
+      }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+
+      const context = canvas.getContext("2d");
+      context.fillStyle = "#ffffff"; // fundo branco pra png transparente nao ficar preto
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      canvas.toBlob(function (blob) {
+        if (blob) {
+          resolve(blob);
+        } else {
+          reject(new Error("nao foi possivel converter"));
+        }
+      }, "image/jpeg", 0.85);
+    };
+
+    img.onerror = function () {
+      URL.revokeObjectURL(url);
+      reject(new Error("imagem invalida"));
+    };
+
+    img.src = url;
+  });
+}
+
+// pro arquivo de backup: imagem -> texto (data URL) e o caminho de volta
+function blobToDataUrl(blob) {
+  return new Promise(function (resolve, reject) {
+    const reader = new FileReader();
+    reader.onload = function () {
+      resolve(reader.result);
+    };
+    reader.onerror = function () {
+      reject(reader.error);
+    };
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function dataUrlToBlob(dataUrl) {
+  const response = await fetch(dataUrl);
+  return response.blob();
 }
 
 // ---------- tela ----------
@@ -264,12 +440,24 @@ function createGeneratedCover(book) {
   return cover;
 }
 
+// qual imagem usar: primeiro a do aparelho, depois o link
+function getBookImage(book) {
+  if (book.localCover && coverUrls[book.id]) {
+    return coverUrls[book.id];
+  }
+  if (book.image && isValidImageUrl(book.image)) {
+    return book.image;
+  }
+  return "";
+}
+
 function createCover(book) {
   const cover = createElement("div", "book-cover");
+  const image = getBookImage(book);
 
-  if (book.image && isValidImageUrl(book.image)) {
+  if (image) {
     const img = document.createElement("img");
-    img.src = book.image;
+    img.src = image;
     img.alt = "Capa de " + book.title;
     img.loading = "lazy";
     img.onerror = function () {
@@ -402,12 +590,87 @@ function showError(input, show) {
   }
 }
 
+// ---------- capa no formulario ----------
+
+let previewUrl = null; // endereco temporario da imagem escolhida (pra mostrar a previa)
+
+function getEditingBook() {
+  return books.find(function (book) {
+    return book.id === editingId;
+  });
+}
+
+// mostra a previa: imagem nova escolhida > capa salva do livro > link digitado
+function updateCoverPreview() {
+  let src = "";
+  const book = getEditingBook();
+  const link = imageInput.value.trim();
+
+  if (newCover) {
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
+    previewUrl = URL.createObjectURL(newCover);
+    src = previewUrl;
+  } else if (book && book.localCover && !removeCover && coverUrls[book.id]) {
+    src = coverUrls[book.id];
+  } else if (link && isValidImageUrl(link)) {
+    src = link;
+  }
+
+  if (src) {
+    coverPreviewImg.src = src;
+    coverPreviewImg.hidden = false;
+  } else {
+    coverPreviewImg.removeAttribute("src");
+    coverPreviewImg.hidden = true;
+  }
+  removeCoverBtn.hidden = !src;
+}
+
+async function handleCoverFile(file) {
+  coverFile.value = ""; // pra conseguir escolher o mesmo arquivo de novo
+
+  if (!file.type.startsWith("image/")) {
+    imageHint.textContent = "Esse arquivo não é uma imagem.";
+    return;
+  }
+  if (file.size > MAX_COVER_FILE) {
+    imageHint.textContent = "Imagem muito grande (máximo 15 MB).";
+    return;
+  }
+
+  imageHint.textContent = "Preparando a imagem...";
+  try {
+    newCover = await resizeImage(file);
+    removeCover = false;
+    imageInput.value = ""; // a imagem do aparelho substitui o link
+    imageInput.removeAttribute("aria-invalid");
+    imageHint.textContent = "Imagem pronta (" + Math.round(newCover.size / 1024) + " KB). Ela será salva ao confirmar.";
+  } catch (error) {
+    newCover = null;
+    imageHint.textContent = "Não foi possível abrir essa imagem. Tente outra (JPG ou PNG).";
+  }
+  updateCoverPreview();
+}
+
+function clearCover() {
+  newCover = null;
+  removeCover = true;
+  imageInput.value = "";
+  imageHint.textContent = DEFAULT_IMAGE_HINT;
+  updateCoverPreview();
+  chooseCoverBtn.focus();
+}
+
 function openBookDialog(book) {
   form.reset();
   showError(titleInput, false);
   showError(authorInput, false);
   imageInput.removeAttribute("aria-invalid");
-  imageHint.textContent = "Sem capa? O PageLog cria uma para você.";
+  imageHint.textContent = DEFAULT_IMAGE_HINT;
+  newCover = null;
+  removeCover = false;
 
   if (book) {
     editingId = book.id;
@@ -427,6 +690,7 @@ function openBookDialog(book) {
   }
 
   updateCommentCount();
+  updateCoverPreview();
   bookDialog.showModal();
   titleInput.focus();
 }
@@ -449,7 +713,6 @@ function validateForm() {
     if (!firstError) firstError = imageInput;
   } else {
     imageInput.removeAttribute("aria-invalid");
-    imageHint.textContent = "Sem capa? O PageLog cria uma para você.";
   }
 
   if (firstError) {
@@ -459,38 +722,62 @@ function validateForm() {
   return true;
 }
 
-function handleSubmit(event) {
+async function handleSubmit(event) {
   event.preventDefault();
   if (!validateForm()) {
     return;
   }
 
   const now = Date.now();
+  const oldBook = getEditingBook();
   const data = {
+    id: editingId || createId(),
     title: titleInput.value,
     author: authorInput.value,
     image: imageInput.value,
     status: statusInput.value,
     rating: Number(form.elements.rating.value),
-    comment: commentInput.value
+    comment: commentInput.value,
+    localCover: oldBook ? oldBook.localCover : false,
+    createdAt: oldBook ? oldBook.createdAt : now,
+    updatedAt: now
   };
 
-  if (editingId) {
-    const index = books.findIndex(function (book) {
-      return book.id === editingId;
-    });
-    data.id = editingId;
-    data.createdAt = books[index].createdAt;
-    data.updatedAt = now;
+  // salva ou apaga a capa do aparelho
+  let coverError = false;
+  submitBtn.disabled = true;
+  try {
+    if (newCover) {
+      await saveCover(data.id, newCover);
+      data.localCover = true;
+      data.image = "";
+    } else if (removeCover || data.image.trim() !== "") {
+      // removeu a capa, ou trocou por um link
+      if (data.localCover) {
+        await deleteCover(data.id);
+      }
+      data.localCover = false;
+    }
+  } catch (error) {
+    coverError = true;
+  }
+  submitBtn.disabled = false;
+
+  if (oldBook) {
+    const index = books.indexOf(oldBook);
     books[index] = normalizeBook(data);
     showToast("Alterações salvas.");
   } else {
-    data.createdAt = now;
-    data.updatedAt = now;
     books.push(normalizeBook(data));
     showToast('"' + data.title.trim() + '" entrou na estante.');
   }
 
+  if (coverError) {
+    showToast("Não foi possível salvar a imagem neste navegador. O livro foi salvo sem ela.");
+  }
+
+  newCover = null;
+  removeCover = false;
   saveBooks();
   bookDialog.close();
   render();
@@ -653,13 +940,34 @@ async function decompress(bytes) {
   return await new Response(stream).text();
 }
 
+// dados pro link: sem as capas do aparelho (o link ficaria enorme)
 function getExportData() {
+  const list = books.map(function (book) {
+    const copy = Object.assign({}, book);
+    copy.localCover = false;
+    return copy;
+  });
   return {
     app: "pagelog",
-    versao: 1,
+    versao: 2,
     exportadoEm: new Date().toISOString(),
-    livros: books
+    livros: list
   };
+}
+
+// dados pro arquivo: inclui as capas como texto (data URL), em "capas": { id: imagem }
+async function getExportDataWithCovers() {
+  const data = getExportData();
+  data.capas = {};
+  for (const book of books) {
+    if (book.localCover) {
+      const blob = await getCover(book.id);
+      if (blob) {
+        data.capas[book.id] = await blobToDataUrl(blob);
+      }
+    }
+  }
+  return data;
 }
 
 // le o JSON importado e passa cada livro pelo normalizeBook
@@ -667,8 +975,12 @@ function getExportData() {
 function readLibrary(text) {
   const data = JSON.parse(text);
   let list = data;
+  let covers = {};
   if (!Array.isArray(data)) {
     list = data ? data.livros : null;
+    if (data && data.capas && typeof data.capas === "object") {
+      covers = data.capas;
+    }
   }
   if (!Array.isArray(list)) {
     throw new Error("formato invalido");
@@ -679,7 +991,16 @@ function readLibrary(text) {
     .filter(function (item) {
       return item && typeof item === "object";
     })
-    .map(normalizeBook)
+    .map(function (item) {
+      const book = normalizeBook(item);
+      book.localCover = false; // a capa so vale depois de salva neste aparelho
+      // capa que veio no arquivo: so aceito imagem em data URL e de tamanho razoavel
+      const cover = covers[item.id];
+      if (typeof cover === "string" && cover.startsWith("data:image/") && cover.length < 3000000) {
+        book.coverData = cover;
+      }
+      return book;
+    })
     .filter(function (book) {
       return book.title !== "" && book.author !== "";
     });
@@ -749,8 +1070,14 @@ async function shareLink() {
   }
 }
 
-function downloadFile() {
-  const json = JSON.stringify(getExportData(), null, 2);
+async function downloadFile() {
+  let data;
+  try {
+    data = await getExportDataWithCovers();
+  } catch (error) {
+    data = getExportData(); // se nao conseguir ler as capas, baixa pelo menos os livros
+  }
+  const json = JSON.stringify(data, null, 2);
   const file = new Blob([json], { type: "application/json" });
   const today = new Date().toISOString().slice(0, 10);
 
@@ -794,7 +1121,12 @@ function mergeBooks(newBooks) {
       result.push(newBook);
       added++;
     } else if (newBook.updatedAt > result[index].updatedAt) {
-      newBook.id = result[index].id;
+      const oldBook = result[index];
+      newBook.id = oldBook.id;
+      // se o livro importado nao trouxe capa nenhuma, mantem a capa que ja tinha aqui
+      if (!newBook.coverData && !newBook.image && oldBook.localCover) {
+        newBook.localCover = true;
+      }
       result[index] = newBook;
       updated++;
     }
@@ -830,30 +1162,48 @@ function askImport(newBooks, origin) {
   importDialog.showModal();
 }
 
-function confirmImport(mode) {
+// salva no IndexedDB as capas que vieram no arquivo
+async function saveImportedCovers() {
+  for (const book of books) {
+    if (book.coverData) {
+      try {
+        await saveCover(book.id, await dataUrlToBlob(book.coverData));
+        book.localCover = true;
+      } catch (error) {
+        book.localCover = false;
+      }
+      delete book.coverData; // nao vai pro localStorage
+    }
+  }
+}
+
+async function confirmImport(mode) {
   if (!pendingImport) {
     return;
   }
 
   saveBackup("Importação desfeita: a estante voltou a ser como antes.");
+  let message = "";
 
   if (mode === "replace") {
     books = pendingImport;
-    showToast("Estante substituída: " + plural(books.length, "livro", "livros") + ".", true);
+    message = "Estante substituída: " + plural(books.length, "livro", "livros") + ".";
   } else {
     const result = mergeBooks(pendingImport);
     books = result.books;
-    let message = "Estante importada: " + plural(result.added, "novo", "novos");
+    message = "Estante importada: " + plural(result.added, "novo", "novos");
     if (result.updated > 0) {
       message += ", " + plural(result.updated, "atualizado", "atualizados");
     }
-    showToast(message + ".", true);
+    message += ".";
   }
 
   pendingImport = null;
+  importDialog.close();
+  await saveImportedCovers();
   saveBooks();
   render();
-  importDialog.close();
+  showToast(message, true);
 }
 
 async function importFromLink() {
@@ -943,6 +1293,27 @@ form.addEventListener("change", function (event) {
 });
 commentInput.addEventListener("input", updateCommentCount);
 
+// capa: escolher imagem do aparelho, remover, ou digitar um link
+chooseCoverBtn.addEventListener("click", function () {
+  coverFile.click();
+});
+coverFile.addEventListener("change", function () {
+  if (coverFile.files.length > 0) {
+    handleCoverFile(coverFile.files[0]);
+  }
+});
+removeCoverBtn.addEventListener("click", clearCover);
+imageInput.addEventListener("input", function () {
+  // digitou um link: ele passa a valer no lugar da imagem do aparelho
+  // (se apagar o link de novo, a imagem salva volta)
+  const hasLink = imageInput.value.trim() !== "";
+  if (hasLink) {
+    newCover = null;
+  }
+  removeCover = hasLink;
+  updateCoverPreview();
+});
+
 // mostra as estrelas acendendo quando passa o mouse
 starLabels.forEach(function (label, index) {
   label.addEventListener("mouseenter", function () {
@@ -1010,3 +1381,10 @@ applyTheme(document.documentElement.dataset.theme || "light");
 loadBooks();
 render();
 importFromLink();
+
+// as capas do IndexedDB carregam depois (e assincrono), ai desenha de novo
+loadCovers()
+  .then(render)
+  .catch(function () {
+    // sem IndexedDB (ex.: alguns modos anonimos): os livros aparecem com a capa gerada
+  });

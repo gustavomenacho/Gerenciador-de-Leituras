@@ -906,6 +906,58 @@ body {
   display: none;
 }
 
+/* campo da capa no formulario */
+.cover-field {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.cover-preview {
+  flex-shrink: 0;
+  width: 72px;
+  aspect-ratio: 2 / 3;
+  border: 1px dashed var(--line);
+  border-radius: 6px;
+  background: var(--paper-deep);
+  overflow: hidden;
+}
+
+.cover-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cover-preview img[hidden] {
+  display: none;
+}
+
+.cover-options {
+  flex: 1;
+  min-width: 0;
+}
+
+.cover-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.btn-small {
+  min-height: 38px;
+  padding: 0 14px;
+  font-size: 14px;
+}
+
+.cover-or {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
 /* aviso (toast) */
 .toast {
   position: fixed;

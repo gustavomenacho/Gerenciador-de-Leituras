@@ -62,6 +62,7 @@ Depois de entregar, voltei nele para melhorar. Corrigi bugs que tinham passado (
 ## ✨ Funcionalidades
 
 - Cadastrar, editar e excluir livros (título, autor, capa, status, nota e anotação)
+- Capa com **imagem do próprio aparelho** (galeria ou câmera no celular) ou por link, com prévia no formulário
 - Capa gerada automaticamente quando o livro não tem imagem ou o link da capa quebra
 - Totais por status no topo, que também funcionam como filtro
 - Busca por título ou autor ignorando acentos ("codigo" encontra "Código Limpo")
@@ -95,7 +96,7 @@ Depois é só abrir o `index.html` no navegador ou usar a extensão **Live Serve
 ```
 index.html        estrutura da página e janelas (dialog)
 style.css         estilos, cores do tema claro e escuro, responsivo
-script.js         lógica: salvar, mostrar, filtrar, importar/exportar
+script.js         lógica: salvar, mostrar, filtrar, capas, importar/exportar
 assets/           logo e favicon
 docs/capturas/    imagens do README
 ```
@@ -116,9 +117,16 @@ docs/capturas/    imagens do README
 
 **Tema escuro com variáveis CSS.** Todas as cores estão em variáveis no `:root`. O tema escuro só troca o valor delas em `:root[data-theme="dark"]`. Um script pequeno no `<head>` aplica o tema antes da página aparecer, para não piscar branco.
 
+**Capas do aparelho com IndexedDB.** Antes a capa só podia ser um link. Para aceitar uma foto do celular eu tinha dois problemas: o `localStorage` só guarda texto e tem limite de uns 5 MB, e uma foto de celular sozinha já passa disso. A solução foi:
+- **diminuir a imagem antes de salvar:** desenho a foto num `<canvas>` com no máximo 400×600 px e exporto em JPEG (`canvas.toBlob`). Uma foto de 5 MB vira uns 15 KB;
+- **guardar no IndexedDB**, o banco de dados do navegador que aceita arquivos (`Blob`) e tem muito mais espaço. A chave é o `id` do livro, e no `localStorage` o livro só guarda `localCover: true`;
+- **mostrar** com `URL.createObjectURL()`, que cria um endereço temporário para o `<img>` usar a imagem salva.
+
+Quando a página abre, ela carrega as capas e apaga as que sobraram de livros excluídos. Não apago na hora de excluir porque aí o "Desfazer" perderia a capa.
+
 **Levar a estante sem servidor.** Como o `localStorage` é de cada navegador, os livros do celular não aparecem no PC. Para resolver sem precisar de login e banco de dados:
 - **Link:** transformo a estante em JSON, comprimo com `CompressionStream`, converto para base64 e coloco depois do `#` no link. O que vem depois do `#` não vai para o servidor, então os dados passam direto de um navegador para o outro.
-- **Arquivo:** o mesmo JSON, baixado como `.json` e importado com `<input type="file">`.
+- **Arquivo:** o mesmo JSON, baixado como `.json` e importado com `<input type="file">`. O arquivo também leva as capas do aparelho (convertidas em texto com `FileReader`); o link não leva, porque ficaria grande demais.
 
 Na hora de importar dá para **juntar** ou **substituir**. Para juntar sem duplicar, comparo os livros pelo id ou por título + autor, e fica a versão que foi editada por último (cada livro guarda `updatedAt`). Como o arquivo pode vir de qualquer lugar, todo livro importado passa pela mesma função que limpa e valida os dados do formulário.
 
