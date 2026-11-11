@@ -297,11 +297,15 @@ export async function confirmImport(mode) {
   } else {
     const result = mergeBooks(state.pendingImport);
     state.books = result.books;
-    message = "Estante importada: " + plural(result.added, "novo", "novos");
-    if (result.updated > 0) {
-      message += ", " + plural(result.updated, "atualizado", "atualizados");
+    if (result.added === 0 && result.updated === 0) {
+      message = "Nada novo: sua estante já estava em dia.";
+    } else {
+      message = "Estante importada: " + plural(result.added, "novo", "novos");
+      if (result.updated > 0) {
+        message += ", " + plural(result.updated, "atualizado", "atualizados");
+      }
+      message += ".";
     }
-    message += ".";
   }
 
   state.pendingImport = null;

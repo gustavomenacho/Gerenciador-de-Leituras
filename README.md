@@ -16,6 +16,7 @@ Feito com **HTML, CSS e JavaScript puro**, sem frameworks e sem bibliotecas.
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)
 ![localStorage](https://img.shields.io/badge/dados-localStorage-2f4a3a?style=flat)
 ![Netlify](https://img.shields.io/badge/deploy-Netlify-00C7B7?style=flat&logo=netlify&logoColor=white)
+![PWA](https://img.shields.io/badge/PWA-instal%C3%A1vel%20e%20offline-5A0FC8?style=flat&logo=pwa&logoColor=white)
 
 </div>
 
@@ -24,7 +25,8 @@ Feito com **HTML, CSS e JavaScript puro**, sem frameworks e sem bibliotecas.
 ## 📸 Telas
 
 <p align="center">
-  <img src="docs/capturas/estante.webp" alt="Estante do PageLog com os totais, busca, filtros e cinco livros" width="100%">
+  <img src="docs/capturas/estante.webp" alt="Estante do PageLog com os totais, a meta do ano, busca, filtros e cinco livros" width="100%">
+  <br><em>Estante com meta do ano, progresso de leitura e uma capa enviada do aparelho</em>
 </p>
 
 <p align="center">
@@ -62,7 +64,10 @@ Depois de entregar, voltei nele para melhorar. Corrigi bugs que tinham passado (
 ## ✨ Funcionalidades
 
 - Cadastrar, editar e excluir livros (título, autor, capa, status, nota e anotação)
+- **Progresso de leitura**: página atual e total, com barra de progresso nos livros que estou lendo
+- **Meta do ano**: quantos livros quero ler e quantos já terminei (conta pela data em que terminei)
 - Capa com **imagem do próprio aparelho** (galeria ou câmera no celular) ou por link, com prévia no formulário
+- **Buscar capa** pela [Open Library](https://openlibrary.org/developers/api): mostra algumas capas para escolher e já completa autor e número de páginas
 - Capa gerada automaticamente quando o livro não tem imagem ou o link da capa quebra
 - Totais por status no topo, que também funcionam como filtro
 - Busca por título ou autor ignorando acentos ("codigo" encontra "Código Limpo")
@@ -71,6 +76,7 @@ Depois de entregar, voltei nele para melhorar. Corrigi bugs que tinham passado (
 - Excluir com opção de **desfazer**
 - **Levar a estante para outro aparelho** (começar no celular e continuar no PC) por link ou por arquivo de backup
 - Tema claro e escuro (segue o sistema, mas dá para trocar no botão)
+- **Instalável como app** no celular e no PC, e funciona **sem internet**
 - Botão "Ver exemplos" para quem quer só conhecer o app
 - Tudo salvo no navegador, sem servidor
 
@@ -80,25 +86,46 @@ Depois de entregar, voltei nele para melhorar. Corrigi bugs que tinham passado (
 
 O site está no ar em **[pagelog-leituras.netlify.app](https://pagelog-leituras.netlify.app)** (o Netlify publica de novo a cada push na `main`).
 
-Para rodar localmente não precisa instalar nada:
+Para rodar localmente não precisa instalar nenhuma dependência, mas precisa de um servidor local, porque o JavaScript usa módulos (`import`/`export`) e o navegador não carrega módulos abrindo o arquivo direto (`file://`):
 
 ```bash
 git clone https://github.com/gustavomenacho/Gerenciador-de-Leituras.git
 cd Gerenciador-de-Leituras
+npx serve .
 ```
 
-Depois é só abrir o `index.html` no navegador ou usar a extensão **Live Server** do VS Code.
+Ou use a extensão **Live Server** do VS Code. Com Python também funciona: `python -m http.server`.
+
+**Instalar no celular:** abra o site no Chrome (Android) e toque em "Instalar o PageLog" no rodapé ou em "Adicionar à tela inicial" no menu. No iPhone, use Compartilhar → "Adicionar à Tela de Início".
 
 ---
 
 ## 🗂️ Arquivos
 
 ```
-index.html        estrutura da página e janelas (dialog)
-style.css         estilos, cores do tema claro e escuro, responsivo
-script.js         lógica: salvar, mostrar, filtrar, capas, importar/exportar
-assets/           logo e favicon
-docs/capturas/    imagens do README
+index.html             estrutura da página e janelas (dialog)
+style.css              estilos, cores do tema claro e escuro, responsivo
+manifest.webmanifest   dados do app instalável (nome, ícones, cores)
+sw.js                  service worker: guarda os arquivos para funcionar offline
+js/
+  main.js              liga os eventos e inicia a página
+  estado.js            variáveis compartilhadas (lista de livros etc.)
+  constantes.js        valores fixos e livros de exemplo
+  elementos.js         referências aos elementos do HTML
+  utils.js             funções pequenas usadas em vários lugares
+  dados.js             formato do livro, salvar e carregar do localStorage
+  tela.js              desenha os cards, totais e filtros
+  formulario.js        cadastro/edição, estrelas e capa no formulário
+  capas.js             capas do aparelho no IndexedDB
+  openlibrary.js       busca de capas na Open Library
+  meta.js              meta de leitura do ano
+  acoes.js             excluir, desfazer, exemplos, avisos
+  tema.js              tema claro/escuro
+  transferir.js        levar a estante por link ou arquivo
+  pwa.js               registra o service worker e o botão de instalar
+fonts/                 Fraunces e Inter (licença OFL)
+assets/                logo, favicon e ícones do app
+docs/capturas/         imagens do README
 ```
 
 ---
@@ -123,6 +150,18 @@ docs/capturas/    imagens do README
 - **mostrar** com `URL.createObjectURL()`, que cria um endereço temporário para o `<img>` usar a imagem salva.
 
 Quando a página abre, ela carrega as capas e apaga as que sobraram de livros excluídos. Não apago na hora de excluir porque aí o "Desfazer" perderia a capa.
+
+**Progresso e meta.** Cada livro guarda `pagesRead`, `pagesTotal` e `finishedAt`. A barra usa o elemento `<progress>`, que já é acessível. Quando marco um livro como "Lido", o formulário preenche a data de hoje e completa as páginas. A meta conta os livros com `finishedAt` no ano atual. Para pegar a data de hoje usei `getFullYear/getMonth/getDate` em vez de `toISOString()`, porque o `toISOString` converte para o horário de Londres e à noite dava o dia seguinte.
+
+**Consumir uma API pública (Open Library).** O botão "Buscar capa" usa `fetch` na API de busca da Open Library com `URLSearchParams` e mostra só os resultados que têm capa. Coloquei um tempo limite com `AbortController` (se a API demorar mais de 8 segundos, cancela) e mensagens para "sem resultado" e "sem internet". A busca só acontece quando clico no botão, nunca enquanto digito.
+
+**Separar em módulos.** O `script.js` tinha passado de 1.400 linhas. Dividi em arquivos por assunto com `import`/`export`. Uma coisa que aprendi: um módulo não consegue mudar uma variável `let` de outro módulo, então as variáveis compartilhadas (como a lista de livros) ficam num objeto `state` em `estado.js`.
+
+**App instalável e offline (PWA).** O `manifest.webmanifest` diz ao navegador o nome, os ícones e as cores do app, e isso permite instalar. O `sw.js` é um service worker: na instalação ele guarda os arquivos do site no aparelho, e depois intercepta os pedidos. Usei "rede primeiro": com internet pega a versão nova; sem internet usa a cópia guardada. Testei derrubando o servidor e o site continuou abrindo. As capas da Open Library ficam num cache separado para aparecerem offline também.
+
+**Fontes no próprio site.** Antes as fontes vinham do Google Fonts, que é um pedido a outro servidor antes de mostrar o texto. Baixei só os arquivos `.woff2` do alfabeto latino (são fontes variáveis, um arquivo cobre vários pesos) e uso `@font-face` com `preload`. Fica mais rápido e funciona offline.
+
+**Um bug com `hidden`.** Botões com `hidden` continuavam aparecendo. O motivo: a classe `.btn` tem `display: inline-flex`, e isso ganha da regra padrão do navegador para `[hidden]`. Resolvi com `[hidden] { display: none !important; }`.
 
 **Levar a estante sem servidor.** Como o `localStorage` é de cada navegador, os livros do celular não aparecem no PC. Para resolver sem precisar de login e banco de dados:
 - **Link:** transformo a estante em JSON, comprimo com `CompressionStream`, converto para base64 e coloco depois do `#` no link. O que vem depois do `#` não vai para o servidor, então os dados passam direto de um navegador para o outro.

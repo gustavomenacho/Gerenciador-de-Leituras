@@ -87,6 +87,13 @@
 }
 
 /* reset */
+
+/* garante que o atributo hidden sempre esconde
+   (sem isso, classes como .btn com display: inline-flex ganham do hidden) */
+[hidden] {
+  display: none !important;
+}
+
 *,
 *::before,
 *::after {
@@ -1080,8 +1087,9 @@ body {
 /* campos de paginas no formulario */
 .progress-fields {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 10px;
+  align-items: end;
 }
 
 .progress-fields [hidden] {
