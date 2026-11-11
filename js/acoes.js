@@ -1,7 +1,7 @@
 import { EXAMPLE_BOOKS, UNDO_TIME } from "./constantes.js";
 import { state } from "./estado.js";
 import { searchInput, statusFilter, toast, toastText, toastUndo } from "./elementos.js";
-import { normalizeBook, saveBooks } from "./dados.js";
+import { normalizeBook, saveBooks, today } from "./dados.js";
 import { render } from "./tela.js";
 
 // ---------- acoes ----------
@@ -48,6 +48,10 @@ export function loadExamples() {
   state.books = EXAMPLE_BOOKS.map(function (book, i) {
     const copy = Object.assign({}, book);
     copy.createdAt = now - i;
+    if (copy.status === "Lido") {
+      copy.finishedAt = today();
+      copy.pagesRead = copy.pagesTotal;
+    }
     return normalizeBook(copy);
   });
   saveBooks();

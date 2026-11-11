@@ -2,6 +2,8 @@ import { STATUS_LIST } from "./constantes.js";
 import { state } from "./estado.js";
 import { emptyLibrary, emptySearch, grid, resultCount, searchInput, sortSelect, statButtons, statusFilter } from "./elementos.js";
 import { createElement, createIcon, getCoverColor, isValidImageUrl, normalizeText, plural } from "./utils.js";
+import { formatDate } from "./dados.js";
+import { renderGoal } from "./meta.js";
 
 // ---------- tela ----------
 
@@ -94,6 +96,28 @@ export function createRating(rating) {
   return stars;
 }
 
+// barra de progresso de quem esta lendo
+function createProgress(book) {
+  const percent = Math.round((book.pagesRead / book.pagesTotal) * 100);
+  const wrapper = createElement("div", "book-progress");
+
+  const bar = document.createElement("progress");
+  bar.className = "progress";
+  bar.max = book.pagesTotal;
+  bar.value = book.pagesRead;
+  bar.setAttribute("aria-label", "Progresso de " + book.title + ": " + percent + "%");
+
+  const text = createElement(
+    "span",
+    "book-progress-text",
+    book.pagesRead + " de " + book.pagesTotal + " páginas · " + percent + "%"
+  );
+
+  wrapper.appendChild(bar);
+  wrapper.appendChild(text);
+  return wrapper;
+}
+
 export function createCard(book) {
   const card = createElement("li", "book");
   card.dataset.id = book.id;
@@ -103,6 +127,12 @@ export function createCard(book) {
   body.appendChild(createElement("p", "book-author", book.author));
   if (book.rating > 0) {
     body.appendChild(createRating(book.rating));
+  }
+  if (book.status === "Lendo" && book.pagesTotal > 0) {
+    body.appendChild(createProgress(book));
+  }
+  if (book.status === "Lido" && book.finishedAt) {
+    body.appendChild(createElement("p", "book-finished", "Lido em " + formatDate(book.finishedAt)));
   }
   if (book.comment) {
     body.appendChild(createElement("blockquote", "book-comment", book.comment));
@@ -155,6 +185,7 @@ export function render() {
   const visibleBooks = getVisibleBooks();
 
   updateStats();
+  renderGoal();
 
   grid.innerHTML = "";
   visibleBooks.forEach(function (book) {

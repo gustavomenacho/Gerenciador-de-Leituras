@@ -1,8 +1,8 @@
 import { DEFAULT_IMAGE_HINT, MAX_COVER_FILE } from "./constantes.js";
 import { state } from "./estado.js";
-import { authorInput, bookDialog, chooseCoverBtn, commentCount, commentInput, coverFile, coverPreviewImg, dialogTitle, form, imageHint, imageInput, removeCoverBtn, starLabels, statusInput, submitBtn, titleInput } from "./elementos.js";
+import { authorInput, bookDialog, chooseCoverBtn, commentCount, commentInput, coverFile, coverPreviewImg, dialogTitle, finishedField, finishedInput, form, imageHint, imageInput, pagesError, pagesReadInput, pagesTotalInput, removeCoverBtn, starLabels, statusInput, submitBtn, titleInput } from "./elementos.js";
 import { createId, isValidImageUrl } from "./utils.js";
-import { normalizeBook, saveBooks } from "./dados.js";
+import { normalizeBook, saveBooks, today } from "./dados.js";
 import { deleteCover, resizeImage, saveCover } from "./capas.js";
 import { render } from "./tela.js";
 import { showToast } from "./acoes.js";
@@ -107,6 +107,25 @@ export function clearCover() {
   chooseCoverBtn.focus();
 }
 
+// a data "Terminei em" so aparece quando o status e "Lido"
+export function updateFinishedField() {
+  finishedField.hidden = statusInput.value !== "Lido";
+}
+
+// mudou o status no formulario
+export function handleStatusChange() {
+  updateFinishedField();
+  if (statusInput.value === "Lido") {
+    // marcou como lido: preenche a data de hoje e completa as paginas
+    if (!finishedInput.value) {
+      finishedInput.value = today();
+    }
+    if (pagesTotalInput.value) {
+      pagesReadInput.value = pagesTotalInput.value;
+    }
+  }
+}
+
 export function openBookDialog(book) {
   form.reset();
   showError(titleInput, false);
@@ -125,6 +144,9 @@ export function openBookDialog(book) {
     imageInput.value = book.image;
     statusInput.value = book.status;
     commentInput.value = book.comment;
+    pagesReadInput.value = book.pagesRead || "";
+    pagesTotalInput.value = book.pagesTotal || "";
+    finishedInput.value = book.finishedAt;
     setRating(book.rating);
   } else {
     state.editingId = null;
@@ -133,6 +155,9 @@ export function openBookDialog(book) {
     setRating(0);
   }
 
+  pagesError.hidden = true;
+  pagesReadInput.removeAttribute("aria-invalid");
+  updateFinishedField();
   updateCommentCount();
   updateCoverPreview();
   bookDialog.showModal();
@@ -159,6 +184,18 @@ export function validateForm() {
     imageInput.removeAttribute("aria-invalid");
   }
 
+  // pagina atual nao pode passar do total
+  const pagesRead = Number(pagesReadInput.value) || 0;
+  const pagesTotal = Number(pagesTotalInput.value) || 0;
+  const pagesWrong = pagesTotal > 0 && pagesRead > pagesTotal;
+  pagesError.hidden = !pagesWrong;
+  if (pagesWrong) {
+    pagesReadInput.setAttribute("aria-invalid", "true");
+    if (!firstError) firstError = pagesReadInput;
+  } else {
+    pagesReadInput.removeAttribute("aria-invalid");
+  }
+
   if (firstError) {
     firstError.focus();
     return false;
@@ -182,6 +219,9 @@ export async function handleSubmit(event) {
     status: statusInput.value,
     rating: Number(form.elements.rating.value),
     comment: commentInput.value,
+    pagesRead: pagesReadInput.value,
+    pagesTotal: pagesTotalInput.value,
+    finishedAt: finishedInput.value,
     localCover: oldBook ? oldBook.localCover : false,
     createdAt: oldBook ? oldBook.createdAt : now,
     updatedAt: now

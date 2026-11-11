@@ -3,11 +3,12 @@
 // arquivo principal: liga os eventos e inicia a pagina
 
 import { state } from "./estado.js";
-import { chooseCoverBtn, commentInput, copyLinkBtn, coverFile, downloadBtn, form, grid, imageInput, importDialog, importFile, importMergeBtn, importReplaceBtn, removeCoverBtn, searchInput, shareLinkBtn, sortSelect, starLabels, statButtons, statusFilter, themeToggle, toastUndo } from "./elementos.js";
+import { cancelGoalBtn, chooseCoverBtn, commentInput, copyLinkBtn, coverFile, downloadBtn, editGoalBtn, form, goalForm, grid, imageInput, importDialog, importFile, importMergeBtn, importReplaceBtn, removeCoverBtn, searchInput, shareLinkBtn, sortSelect, starLabels, statButtons, statusFilter, statusInput, themeToggle, toastUndo } from "./elementos.js";
 import { loadBooks } from "./dados.js";
 import { loadCovers } from "./capas.js";
 import { render } from "./tela.js";
-import { clearCover, handleCoverFile, handleSubmit, openBookDialog, paintStars, updateCommentCount, updateCoverPreview } from "./formulario.js";
+import { clearCover, handleCoverFile, handleStatusChange, handleSubmit, openBookDialog, paintStars, updateCommentCount, updateCoverPreview } from "./formulario.js";
+import { closeGoalForm, openGoalForm, submitGoal } from "./meta.js";
 import { clearFilters, loadExamples, removeBook, undo } from "./acoes.js";
 import { applyTheme, getSavedTheme, toggleTheme } from "./tema.js";
 import { confirmImport, copyLink, downloadFile, importFromFile, importFromLink, openTransferDialog, shareLink } from "./transferir.js";
@@ -123,6 +124,12 @@ toastUndo.addEventListener("click", function () {
 });
 
 themeToggle.addEventListener("click", toggleTheme);
+
+// progresso e meta do ano
+statusInput.addEventListener("change", handleStatusChange);
+editGoalBtn.addEventListener("click", openGoalForm);
+cancelGoalBtn.addEventListener("click", closeGoalForm);
+goalForm.addEventListener("submit", submitGoal);
 
 // se a pessoa nunca escolheu um tema, acompanha o do sistema
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function (event) {

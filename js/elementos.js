@@ -46,3 +46,17 @@ export const importHint = document.getElementById("importHint");
 export const importMergeBtn = document.getElementById("importMergeBtn");
 export const importReplaceBtn = document.getElementById("importReplaceBtn");
 export const importFile = document.getElementById("importFile");
+
+// progresso e meta
+export const pagesReadInput = document.getElementById("pagesReadInput");
+export const pagesTotalInput = document.getElementById("pagesTotalInput");
+export const finishedField = document.getElementById("finishedField");
+export const finishedInput = document.getElementById("finishedInput");
+export const pagesError = document.getElementById("pagesError");
+export const goalYear = document.getElementById("goalYear");
+export const goalText = document.getElementById("goalText");
+export const goalBar = document.getElementById("goalBar");
+export const editGoalBtn = document.getElementById("editGoalBtn");
+export const goalForm = document.getElementById("goalForm");
+export const goalInput = document.getElementById("goalInput");
+export const cancelGoalBtn = document.getElementById("cancelGoalBtn");
